@@ -8,12 +8,12 @@ let categoriesData = [
 ];
 
 let productsData = [
-    { id: 1, name: 'Нежность', composition: 'Розы, пионы, эвкалипт', price: 3500, oldPrice: 4200, image: 'https://images.pexels.com/photos/1300585/pexels-photo-1300585.jpeg?auto=compress&cs=tinysrgb&w=800', rating: 4.5, reviews: 24, category: 'romantic', description: 'Нежный букет из роз и пионов с добавлением эвкалипта. Идеально подходит для признания в любви или романтического свидания.', inStock: true },
-    { id: 2, name: 'Элегантность', composition: 'Белые розы, гортензии', price: 4200, image: 'https://images.pexels.com/photos/6943690/pexels-photo-6943690.jpeg?auto=compress&cs=tinysrgb&w=800', rating: 4.8, reviews: 32, category: 'wedding', description: 'Изысканный свадебный букет из белых роз и гортензий.', inStock: true },
-    { id: 3, name: 'Весеннее настроение', composition: 'Тюльпаны, гиацинты, ирис', price: 2800, image: 'https://images.pexels.com/photos/1345467/pexels-photo-1345467.jpeg?auto=compress&cs=tinysrgb&w=800', rating: 4.3, reviews: 18, category: 'spring', description: 'Яркий весенний букет, который поднимет настроение.', inStock: true },
-    { id: 4, name: 'Королевский', composition: 'Орхидеи, розы, каллы', price: 6500, image: 'https://images.pexels.com/photos/568018/pexels-photo-568018.jpeg?auto=compress&cs=tinysrgb&w=800', rating: 5.0, reviews: 6, category: 'luxury', description: 'Роскошный букет для особых случаев.', inStock: true },
-    { id: 5, name: 'Любимой', composition: 'Красные розы, гипсофила', price: 3200, image: 'https://images.pexels.com/photos/696996/pexels-photo-696996.jpeg?auto=compress&cs=tinysrgb&w=800', rating: 4.7, reviews: 45, category: 'romantic', description: 'Классический букет из красных роз.', inStock: true },
-    { id: 6, name: 'Радость', composition: 'Герберы, хризантемы', price: 3200, image: 'https://images.pexels.com/photos/1261260/pexels-photo-1261260.jpeg?auto=compress&cs=tinysrgb&w=800', rating: 4.2, reviews: 12, category: 'birthday', description: 'Яркий и жизнерадостный букет.', inStock: true }
+    { id: 1, name: 'Нежность', composition: 'Розы, пионы, эвкалипт', price: 3500, oldPrice: 4200, image: '', rating: 4.5, reviews: 24, category: 'romantic', description: 'Нежный букет из роз и пионов с добавлением эвкалипта. Идеально подходит для признания в любви или романтического свидания.', inStock: true },
+    { id: 2, name: 'Элегантность', composition: 'Белые розы, гортензии', price: 4200, image: '', rating: 4.8, reviews: 32, category: 'wedding', description: 'Изысканный свадебный букет из белых роз и гортензий.', inStock: true },
+    { id: 3, name: 'Весеннее настроение', composition: 'Тюльпаны, гиацинты, ирис', price: 2800, image: '', rating: 4.3, reviews: 18, category: 'spring', description: 'Яркий весенний букет, который поднимет настроение.', inStock: true },
+    { id: 4, name: 'Королевский', composition: 'Орхидеи, розы, каллы', price: 6500, image: '', rating: 5.0, reviews: 6, category: 'luxury', description: 'Роскошный букет для особых случаев.', inStock: true },
+    { id: 5, name: 'Любимой', composition: 'Красные розы, гипсофила', price: 3200, image: '', rating: 4.7, reviews: 45, category: 'romantic', description: 'Классический букет из красных роз.', inStock: true },
+    { id: 6, name: 'Радость', composition: 'Герберы, хризантемы', price: 3200, image: '', rating: 4.2, reviews: 12, category: 'birthday', description: 'Яркий и жизнерадостный букет.', inStock: true }
 ];
 
 let articlesData = [
