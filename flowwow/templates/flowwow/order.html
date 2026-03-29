@@ -25,11 +25,5 @@
     <div class="modal" id="authModal"><div class="modal__content"><button class="modal__close" id="authModalClose"><i class="fas fa-times"></i></button><div class="auth-tabs"><button class="auth-tab active" data-tab="login">Вход</button><button class="auth-tab" data-tab="register">Регистрация</button></div><form id="loginForm" class="auth-form active"><input type="email" placeholder="Email" required><input type="password" placeholder="Пароль" required><button type="submit" class="btn btn--primary btn--full">Войти</button></form><form id="registerForm" class="auth-form"><input type="text" placeholder="Имя" required><input type="email" placeholder="Email" required><input type="password" placeholder="Пароль" required><input type="password" placeholder="Подтвердите пароль" required><button type="submit" class="btn btn--primary btn--full">Зарегистрироваться</button></form></div></div>
     <div class="modal" id="profileModal"><div class="modal__content modal__content--large"><button class="modal__close" id="profileModalClose"><i class="fas fa-times"></i></button><div id="profileContent"></div></div></div>
 
-    <script src="js/data.js"></script>
-    <script src="js/utils.js"></script>
-    <script src="js/cart.js"></script>
-    <script src="js/main.js"></script>
-</body>
-</html>
-
+    {% block scripts %}{% endblock %}
 {% endblock %}

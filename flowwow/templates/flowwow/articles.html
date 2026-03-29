@@ -21,10 +21,7 @@
     <div class="modal" id="profileModal"><div class="modal__content modal__content--large"><button class="modal__close" id="profileModalClose"><i class="fas fa-times"></i></button><div id="profileContent"></div></div></div>
     <div class="modal" id="addArticleModal"><div class="modal__content"><button class="modal__close" id="addArticleModalClose"><i class="fas fa-times"></i></button><h2 class="modal__title">Добавить статью</h2><form id="addArticleForm"><input type="text" id="articleTitle" placeholder="Заголовок" required><textarea id="articleExcerpt" placeholder="Краткое описание" rows="2" required></textarea><input type="text" id="articleImage" placeholder="URL изображения" required><select id="articleCategory" required><option value="Уход за цветами">Уход за цветами</option><option value="Советы">Советы</option><option value="Новости">Новости</option><option value="Свадьба">Свадьба</option><option value="Растения">Растения</option><option value="Мастер-класс">Мастер-класс</option></select><textarea id="articleContent" placeholder="Полный текст" rows="5" required></textarea><button type="submit" class="btn btn--primary btn--full">Сохранить</button></form></div></div>
 
-    <script src="js/data.js"></script>
-    <script src="js/utils.js"></script>
-    <script src="js/cart.js"></script>
-    <script src="js/main.js"></script>
+    {% block scripts %}
     <script>
         function loadArticles() {
             const articlesGrid = document.getElementById('articlesGrid');
@@ -52,6 +49,5 @@
         }
         loadArticles();
     </script>
-</body>
-</html>
+    {% endblock %}
 {% endblock %}

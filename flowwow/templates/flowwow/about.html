@@ -68,10 +68,7 @@
     <div class="modal" id="cartModal"><div class="modal__content"><button class="modal__close" id="cartModalClose"><i class="fas fa-times"></i></button><h2 class="modal__title">Корзина</h2><div class="cart-items" id="cartItems"></div><div class="cart-total"><span>Итого:</span><span id="cartTotal">0 ₽</span></div><button class="btn btn--primary btn--full" id="checkoutBtn">Оформить заказ</button></div></div>
     <div class="modal" id="authModal"><div class="modal__content"><button class="modal__close" id="authModalClose"><i class="fas fa-times"></i></button><div class="auth-tabs"><button class="auth-tab active" data-tab="login">Вход</button><button class="auth-tab" data-tab="register">Регистрация</button></div><form id="loginForm" class="auth-form active"><input type="email" placeholder="Email" required><input type="password" placeholder="Пароль" required><button type="submit" class="btn btn--primary btn--full">Войти</button></form><form id="registerForm" class="auth-form"><input type="text" placeholder="Имя" required><input type="email" placeholder="Email" required><input type="password" placeholder="Пароль" required><input type="password" placeholder="Подтвердите пароль" required><button type="submit" class="btn btn--primary btn--full">Зарегистрироваться</button></form></div></div>
 
-    <script src="js/data.js"></script>
-    <script src="js/utils.js"></script>
-    <script src="js/cart.js"></script>
-    <script src="js/main.js"></script>
+    {% block scripts %}
     <script>
         const teamMembers = [
             { name: 'Инна', role: 'Главный флорист', image: 'https://images.pexels.com/photos/3769027/pexels-photo-3769027.jpeg?auto=compress&cs=tinysrgb&w=400', quote: 'Создаю красоту уже 8 лет' },
@@ -84,6 +81,5 @@
             teamGrid.innerHTML = teamMembers.map(member => `<div class="team-card"><div class="team-card__image" style="background-image: url('${member.image}')"></div><h3 class="team-card__name">${member.name}</h3><p class="team-card__role">${member.role}</p><p class="team-card__quote">"${member.quote}"</p></div>`).join('');
         }
     </script>
-</body>
-</html>
+    {% endblock %}
 {% endblock %}
