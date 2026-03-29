@@ -7,11 +7,12 @@ def index(request):
     return render(request, 'flowwow/index.html')
 
 def about(request):
-    return HttpResponse("abouy")
+    return render(request, 'flowwow/about.html')
 
 def catalog(request):
-    return HttpResponse("catalog")
+    return render(request, 'flowwow/catalog.html')
 
-def cart(request):
-    return HttpResponse("cart")
+def articles(request):
+    return render(request, 'flowwow/articles.html')
+
 
