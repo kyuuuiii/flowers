@@ -33,6 +33,7 @@ class Products(models.Model): # букетики ^_^
     average_rating = models.DecimalField(
         max_digits=3, decimal_places=2, default=0, verbose_name="Средняя оценка"
     )
+    reviews_count = models.PositiveIntegerField(default=0, verbose_name="Количество отзывов")
 
     class Meta:
         verbose_name = "Букет"
@@ -47,9 +48,10 @@ class Products(models.Model): # букетики ^_^
 
     def update_average_rating(self):
         from django.db.models import Avg
-        avg = self.reviews.filter(is_approved=True).aggregate(Avg('rating'))['rating__avg']
+        avg = self.reviews.aggregate(Avg('rating'))['rating__avg']
         self.average_rating = avg if avg is not None else 0
-        self.save(update_fields=['average_rating'])
+        self.reviews_count = self.reviews.count()
+        self.save(update_fields=['average_rating', 'reviews_count'])
 
 class Review(models.Model):
     product = models.ForeignKey(
