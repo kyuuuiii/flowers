@@ -141,6 +141,21 @@ class OrderItem(models.Model):
     def __str__(self):
         return f"{self.product.name} x {self.quantity} (заказ {self.order.id})"
 
+class Articles(models.Model):
+    title = models.CharField(verbose_name="Название статьи")
+    date = models.DateField(verbose_name="Дата публикации", null=True, blank=True)
+    desc = models.CharField(verbose_name="Описание статьи")
+    views = models.IntegerField(verbose_name="Просмотры")
+    text = models.TextField(verbose_name="text")
+    category = models.CharField(verbose_name="Категория статьи", null=True, blank=True, max_length=30)
+    image = models.ImageField(upload_to='products/', verbose_name="Главное изображение", null=True, blank=True)
+    class Meta:
+        verbose_name = "Статья"
+        verbose_name_plural = "Статьи"
+
+    def __str__(self):
+        return self.title
+
 
 @receiver(post_save, sender=Review)
 @receiver(post_delete, sender=Review)
