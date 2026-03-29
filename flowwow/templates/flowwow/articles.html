@@ -1,4 +1,5 @@
 {% extends 'flowwow/layout.html' %}
+{% load static %}
 {% block title %}Статьи о цветах - Flowwow{% endblock %}
 {% block content %}
     <main>
@@ -11,7 +12,24 @@
 
         <section class="articles-grid">
             <div class="container">
-                <div class="articles__grid" id="articlesGrid"></div>
+                <div class="articles__grid" id="articlesGrid">
+                    {% for article in articles %}
+                    <article class="article-card">
+                        <div class="article-card__image" style="background-image: url('{% if article.image %}{{ article.image.url }}{% else %}/static/flowwow/img/article-default.jpg{% endif %}')">
+                            {% if article.category %}<span class="article-card__category">{{ article.category }}</span>{% endif %}
+                        </div>
+                        <div class="article-card__content">
+                            <div class="article-card__meta">
+                                {% if article.date %}<span><i class="far fa-calendar-alt"></i> {{ article.date|date:"d.m.Y" }}</span>{% endif %}
+                                <span><i class="far fa-eye"></i> {{ article.views }}</span>
+                            </div>
+                            <h3 class="article-card__title">{{ article.title }}</h3>
+                            <p class="article-card__excerpt">{{ article.desc }}</p>
+                            <a href="{% url 'article' article.id %}" class="article-card__link">Читать далее <i class="fas fa-arrow-right"></i></a>
+                        </div>
+                    </article>
+                    {% endfor %}
+                </div>
             </div>
         </section>
     </main>
@@ -21,33 +39,5 @@
     <div class="modal" id="profileModal"><div class="modal__content modal__content--large"><button class="modal__close" id="profileModalClose"><i class="fas fa-times"></i></button><div id="profileContent"></div></div></div>
     <div class="modal" id="addArticleModal"><div class="modal__content"><button class="modal__close" id="addArticleModalClose"><i class="fas fa-times"></i></button><h2 class="modal__title">Добавить статью</h2><form id="addArticleForm"><input type="text" id="articleTitle" placeholder="Заголовок" required><textarea id="articleExcerpt" placeholder="Краткое описание" rows="2" required></textarea><input type="text" id="articleImage" placeholder="URL изображения" required><select id="articleCategory" required><option value="Уход за цветами">Уход за цветами</option><option value="Советы">Советы</option><option value="Новости">Новости</option><option value="Свадьба">Свадьба</option><option value="Растения">Растения</option><option value="Мастер-класс">Мастер-класс</option></select><textarea id="articleContent" placeholder="Полный текст" rows="5" required></textarea><button type="submit" class="btn btn--primary btn--full">Сохранить</button></form></div></div>
 
-    {% block scripts %}
-    <script>
-        function loadArticles() {
-            const articlesGrid = document.getElementById('articlesGrid');
-            if (!articlesGrid) return;
-
-            const storedArticles = localStorage.getItem('articles');
-            let articles = storedArticles ? JSON.parse(storedArticles) : articlesData;
-
-            articlesGrid.innerHTML = articles.map(article => `
-                <article class="article-card" data-id="${article.id}" style="cursor: pointer;">
-                    <div class="article-card__image" style="background-image: url('${article.image}')">
-                        <span class="article-card__category">${article.category}</span>
-                    </div>
-                    <div class="article-card__content">
-                        <div class="article-card__meta">
-                            <span><i class="far fa-calendar-alt"></i> ${article.date}</span>
-                            <span><i class="far fa-eye"></i> ${article.views}</span>
-                        </div>
-                        <h3 class="article-card__title">${article.title}</h3>
-                        <p class="article-card__excerpt">${article.excerpt.substring(0, 120)}...</p>
-                        <a href="article.html?id=${article.id}" class="article-card__link">Читать далее <i class="fas fa-arrow-right"></i></a>
-                    </div>
-                </article>
-            `).join('');
-        }
-        loadArticles();
-    </script>
-    {% endblock %}
+    {% block scripts %}{% endblock %}
 {% endblock %}

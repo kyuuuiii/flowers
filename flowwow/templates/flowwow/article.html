@@ -3,7 +3,27 @@
 {% block title %}Статья - Flowwow{% endblock %}
 {% block content %}
     <main>
-        <section class="article-page" id="articleContent"></section>
+        <section class="article-page">
+            {% if article %}
+            <div class="container">
+                <div class="article-page__image" style="background-image: url('{% if article.image %}{{ article.image.url }}{% else %}/static/flowwow/img/article-default.jpg{% endif %}')"></div>
+                <div class="article-page__meta">
+                    {% if article.date %}<span><i class="far fa-calendar-alt"></i> {{ article.date|date:"d.m.Y" }}</span>{% endif %}
+                    {% if article.category %}<span><i class="far fa-folder"></i> {{ article.category }}</span>{% endif %}
+                    <span><i class="far fa-eye"></i> {{ article.views }}</span>
+                </div>
+                <h1 class="article-page__title">{{ article.title }}</h1>
+                <div class="article-page__content">
+                    <p>{{ article.desc }}</p>
+                    {{ article.text|safe }}
+                </div>
+            </div>
+            {% else %}
+            <div class="container">
+                <p>Статья не найдена</p>
+            </div>
+            {% endif %}
+        </section>
     </main>
 
     <div class="modal" id="cartModal"><div class="modal__content"><button class="modal__close" id="cartModalClose"><i class="fas fa-times"></i></button><h2 class="modal__title">Корзина</h2><div class="cart-items" id="cartItems"></div><div class="cart-total"><span>Итого:</span><span id="cartTotal">0 ₽</span></div><button class="btn btn--primary btn--full" id="checkoutBtn">Оформить заказ</button></div></div>

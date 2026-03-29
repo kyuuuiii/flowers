@@ -1,7 +1,7 @@
 from django.shortcuts import render
 
 # Create your views here.
-from .models import Category, Products
+from .models import Category, Products, Articles
 
 def index(request):
     categories = Category.objects.all()
@@ -45,6 +45,20 @@ def product(request, product_slug):
 
 
 def articles(request):
-    return render(request, 'flowwow/articles.html')
+    articles = Articles.objects.all().order_by('-date')
+    context = {
+        'articles': articles,
+    }
+    return render(request, 'flowwow/articles.html', context)
+
+def article(request, article_id):
+    article_obj = Articles.objects.filter(id=article_id).first()
+    if not article_obj:
+        return render(request, 'flowwow/article.html', {'article': None})
+
+    context = {
+        'article': article_obj,
+    }
+    return render(request, 'flowwow/article.html', context)
 
 
