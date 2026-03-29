@@ -1,7 +1,303 @@
-{% extends 'flowwow/layout.html' %}
-{% block content %}
-    <h1>index flowwow</h1>
-    {% include 'flowwow/includable.html' %}
-{% endblock %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Flowwow - Цветочная мастерская</title>
+    <meta name="description" content="Авторские букеты из свежих цветов с доставкой. Создаем настроение с 2010 года.">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container header__container">
+            <a href="index.html" class="logo">
+                <i class="fas fa-feather-alt"></i>
+                <span>Flowwow</span>
+            </a>
+            <nav class="nav">
+                <ul class="nav__list">
+                    <li><a href="index.html" class="nav__link active">Главная</a></li>
+                    <li><a href="catalog.html" class="nav__link">Каталог</a></li>
+                    <li><a href="about.html" class="nav__link">О нас</a></li>
+                    <li><a href="articles.html" class="nav__link">Статьи</a></li>
+                </ul>
+            </nav>
+            <div class="header__actions">
+                <button class="header__btn header__search-btn" aria-label="Поиск">
+                    <i class="fas fa-search"></i>
+                </button>
+                <button class="header__btn header__cart-btn" id="cartBtn" aria-label="Корзина">
+                    <i class="fas fa-shopping-bag"></i>
+                    <span class="cart-count" id="cartCount">0</span>
+                </button>
+                <button class="header__btn header__user-btn" id="userBtn" aria-label="Войти">
+                    <i class="fas fa-user"></i>
+                </button>
+                <button class="header__hamburger" id="hamburgerBtn" aria-label="Меню">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+        <div class="search-bar" id="searchBar">
+            <div class="container">
+                <div class="search-bar__wrapper">
+                    <i class="fas fa-search search-bar__icon"></i>
+                    <input type="text" id="searchInput" placeholder="Поиск по названию или составу букета..." class="search-bar__input">
+                    <button class="search-bar__close" id="closeSearchBtn">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
 
+    <main>
+        <section class="hero">
+            <div class="hero__slider" id="heroSlider">
+                <div class="hero__slide active">
+                    <div class="hero__bg" style="background-image: linear-gradient(135deg, rgba(135,60,83,0.3), rgba(69,82,88,0.2)), url('https://images.pexels.com/photos/931177/pexels-photo-931177.jpeg?auto=compress&cs=tinysrgb&w=1600')"></div>
+                    <div class="container hero__content">
+                        <h1 class="hero__title">Цветы, которые говорят за вас</h1>
+                        <p class="hero__text">Авторские букеты из свежих цветов с доставкой по городу</p>
+                        <a href="catalog.html" class="btn btn--primary">Выбрать букет</a>
+                    </div>
+                </div>
+                <div class="hero__slide">
+                    <div class="hero__bg" style="background-image: linear-gradient(135deg, rgba(135,60,83,0.3), rgba(69,82,88,0.2)), url('https://images.pexels.com/photos/568021/pexels-photo-568021.jpeg?auto=compress&cs=tinysrgb&w=1600')"></div>
+                    <div class="container hero__content">
+                        <h1 class="hero__title">Создаём настроение с 2007 года</h1>
+                        <p class="hero__text">Более 15 лет радуем клиентов свежими цветами и безупречным сервисом</p>
+                        <a href="catalog.html" class="btn btn--primary">Посмотреть каталог</a>
+                    </div>
+                </div>
+                <div class="hero__slide">
+                    <div class="hero__bg" style="background-image: linear-gradient(135deg, rgba(135,60,83,0.3), rgba(69,82,88,0.2)), url('https://images.pexels.com/photos/1323400/pexels-photo-1323400.jpeg?auto=compress&cs=tinysrgb&w=1600')"></div>
+                    <div class="container hero__content">
+                        <h1 class="hero__title">Индивидуальный подход</h1>
+                        <p class="hero__text">Создадим уникальную композицию специально для вас</p>
+                        <a href="catalog.html" class="btn btn--primary">Заказать</a>
+                    </div>
+                </div>
+            </div>
+            <button class="hero__btn hero__btn--prev" id="heroPrev">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <button class="hero__btn hero__btn--next" id="heroNext">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+            <div class="hero__dots" id="heroDots"></div>
+        </section>
 
+        <section class="categories">
+            <div class="container">
+                <h2 class="section-title">Выберите повод</h2>
+                <div class="categories__grid" id="categoriesGrid"></div>
+            </div>
+        </section>
+
+        <section class="products">
+            <div class="container">
+                <h2 class="section-title">Популярные букеты</h2>
+                <div class="products__grid" id="popularProducts"></div>
+            </div>
+        </section>
+
+        <section class="features">
+            <div class="container">
+                <div class="features__grid">
+                    <div class="feature-card">
+                        <div class="feature-card__icon"><i class="fas fa-truck-fast"></i></div>
+                        <h3 class="feature-card__title">Быстрая доставка</h3>
+                        <p class="feature-card__text">Доставка в день заказа. Курьер позвонит за 30 минут</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-card__icon"><i class="fas fa-leaf"></i></div>
+                        <h3 class="feature-card__title">Свежие цветы</h3>
+                        <p class="feature-card__text">Только свежие цветы от проверенных поставщиков</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-card__icon"><i class="fas fa-gift"></i></div>
+                        <h3 class="feature-card__title">Подарочная упаковка</h3>
+                        <p class="feature-card__text">Красивая упаковка и открытка в подарок</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-card__icon"><i class="fas fa-hand-holding-heart"></i></div>
+                        <h3 class="feature-card__title">Индивидуальный подход</h3>
+                        <p class="feature-card__text">Создадим букет с учетом ваших пожеланий</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="testimonials">
+            <div class="container">
+                <h2 class="section-title">Нас рекомендуют</h2>
+                <div class="testimonials__slider" id="testimonialsSlider">
+                    <div class="testimonials__slides" id="testimonialsSlides"></div>
+                    <button class="testimonials__btn testimonials__btn--prev" id="testimonialsPrev">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <button class="testimonials__btn testimonials__btn--next" id="testimonialsNext">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+                <div class="testimonials__dots" id="testimonialsDots"></div>
+            </div>
+        </section>
+
+        <section class="newsletter">
+            <div class="container">
+                <div class="newsletter__content">
+                    <h2 class="newsletter__title">Будьте в курсе новинок</h2>
+                    <p class="newsletter__text">Подпишитесь на рассылку и получайте информацию о новых букетах и акциях</p>
+                    <form class="newsletter__form" id="newsletterForm">
+                        <input type="email" placeholder="Ваш email" required class="newsletter__input">
+                        <button type="submit" class="btn btn--primary">Подписаться</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer__grid">
+                <div class="footer__col">
+                    <a href="index.html" class="footer__logo"><i class="fas fa-feather-alt"></i><span>Flowwow</span></a>
+                    <p class="footer__text">Цветочная мастерская с душой. Создаем настроение с 2007 года.</p>
+                </div>
+                <div class="footer__col">
+                    <h3 class="footer__title">Навигация</h3>
+                    <ul class="footer__links">
+                        <li><a href="index.html">Главная</a></li>
+                        <li><a href="catalog.html">Каталог</a></li>
+                        <li><a href="about.html">О нас</a></li>
+                        <li><a href="articles.html">Статьи</a></li>
+                    </ul>
+                </div>
+                <div class="footer__col">
+                    <h3 class="footer__title">Контакты</h3>
+                    <ul class="footer__links">
+                        <li><i class="fas fa-map-marker-alt"></i> г. Ростов-на-Дону</li>
+                        <li><i class="fas fa-phone"></i> 8-863-765-38-90</li>
+                        <li><i class="fas fa-envelope"></i> info@flowwow.ru</li>
+                        <li><i class="fas fa-clock"></i> Пн-Пт: 9:00-20:00, Сб-Вс: 10:00-22:00</li>
+                    </ul>
+                </div>
+                <div class="footer__col">
+                    <h3 class="footer__title">Мы в соцсетях</h3>
+                    <div class="footer__social">
+                        <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="#" aria-label="VK"><i class="fab fa-vk"></i></a>
+                        <a href="#" aria-label="Telegram"><i class="fab fa-telegram"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer__bottom">
+                <p>© 2026 Flowwow. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+
+    <div class="modal" id="cartModal">
+        <div class="modal__content">
+            <button class="modal__close" id="cartModalClose"><i class="fas fa-times"></i></button>
+            <h2 class="modal__title">Корзина</h2>
+            <div class="cart-items" id="cartItems"></div>
+            <div class="cart-total">
+                <span>Итого:</span>
+                <span id="cartTotal">0 ₽</span>
+            </div>
+            <button class="btn btn--primary btn--full" id="checkoutBtn">Оформить заказ</button>
+        </div>
+    </div>
+
+    <div class="modal" id="authModal">
+        <div class="modal__content">
+            <button class="modal__close" id="authModalClose"><i class="fas fa-times"></i></button>
+            <div class="auth-tabs">
+                <button class="auth-tab active" data-tab="login">Вход</button>
+                <button class="auth-tab" data-tab="register">Регистрация</button>
+            </div>
+            <form id="loginForm" class="auth-form active">
+                <input type="email" placeholder="Email" required>
+                <input type="password" placeholder="Пароль" required>
+                <button type="submit" class="btn btn--primary btn--full">Войти</button>
+            </form>
+            <form id="registerForm" class="auth-form">
+                <input type="text" placeholder="Имя" required>
+                <input type="email" placeholder="Email" required>
+                <input type="password" placeholder="Пароль" required>
+                <input type="password" placeholder="Подтвердите пароль" required>
+                <button type="submit" class="btn btn--primary btn--full">Зарегистрироваться</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal" id="profileModal">
+        <div class="modal__content modal__content--large">
+            <button class="modal__close" id="profileModalClose"><i class="fas fa-times"></i></button>
+            <div id="profileContent"></div>
+        </div>
+    </div>
+
+    <div class="modal" id="productModal">
+        <div class="modal__content modal__content--large">
+            <button class="modal__close" id="productModalClose"><i class="fas fa-times"></i></button>
+            <div class="product-detail" id="productDetail"></div>
+        </div>
+    </div>
+
+    <div class="modal" id="addProductModal">
+        <div class="modal__content">
+            <button class="modal__close" id="addProductModalClose"><i class="fas fa-times"></i></button>
+            <h2 class="modal__title" id="addProductTitle">Добавить товар</h2>
+            <form id="addProductForm">
+                <input type="text" id="productName" placeholder="Название букета" required>
+                <input type="text" id="productComposition" placeholder="Состав (розы, пионы...)" required>
+                <input type="number" id="productPrice" placeholder="Цена" required>
+                <input type="text" id="productImage" placeholder="URL изображения" required>
+                <select id="productCategory" required>
+                    <option value="romantic">Романтические</option>
+                    <option value="wedding">Свадебные</option>
+                    <option value="birthday">День рождения</option>
+                    <option value="business">Деловые</option>
+                    <option value="spring">Весенние</option>
+                    <option value="luxury">Премиум</option>
+                </select>
+                <textarea id="productDescription" placeholder="Описание букета" rows="3" required></textarea>
+                <button type="submit" class="btn btn--primary btn--full">Сохранить</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal" id="addArticleModal">
+        <div class="modal__content">
+            <button class="modal__close" id="addArticleModalClose"><i class="fas fa-times"></i></button>
+            <h2 class="modal__title">Добавить статью</h2>
+            <form id="addArticleForm">
+                <input type="text" id="articleTitle" placeholder="Заголовок статьи" required>
+                <textarea id="articleExcerpt" placeholder="Краткое описание" rows="2" required></textarea>
+                <input type="text" id="articleImage" placeholder="URL изображения" required>
+                <select id="articleCategory" required>
+                    <option value="Уход за цветами">Уход за цветами</option>
+                    <option value="Советы">Советы</option>
+                    <option value="Новости">Новости</option>
+                    <option value="Свадьба">Свадьба</option>
+                    <option value="Растения">Растения</option>
+                    <option value="Мастер-класс">Мастер-класс</option>
+                </select>
+                <textarea id="articleContent" placeholder="Полный текст статьи" rows="5" required></textarea>
+                <button type="submit" class="btn btn--primary btn--full">Сохранить</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/data.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/cart.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>О нас - Flowwow</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container header__container">
+            <a href="index.html" class="logo"><i class="fas fa-feather-alt"></i><span>Flowwow</span></a>
+            <nav class="nav">
+                <ul class="nav__list">
+                    <li><a href="index.html" class="nav__link">Главная</a></li>
+                    <li><a href="catalog.html" class="nav__link">Каталог</a></li>
+                    <li><a href="about.html" class="nav__link active">О нас</a></li>
+                    <li><a href="articles.html" class="nav__link">Статьи</a></li>
+                </ul>
+            </nav>
+            <div class="header__actions">
+                <button class="header__btn header__search-btn" aria-label="Поиск"><i class="fas fa-search"></i></button>
+                <button class="header__btn header__cart-btn" id="cartBtn" aria-label="Корзина"><i class="fas fa-shopping-bag"></i><span class="cart-count" id="cartCount">0</span></button>
+                <button class="header__btn header__user-btn" id="userBtn" aria-label="Войти"><i class="fas fa-user"></i></button>
+                <button class="header__hamburger" id="hamburgerBtn" aria-label="Меню"><i class="fas fa-bars"></i></button>
+            </div>
+        </div>
+        <div class="search-bar" id="searchBar">
+            <div class="container">
+                <div class="search-bar__wrapper">
+                    <i class="fas fa-search search-bar__icon"></i>
+                    <input type="text" id="searchInput" placeholder="Поиск по названию или составу букета..." class="search-bar__input">
+                    <button class="search-bar__close" id="closeSearchBtn"><i class="fas fa-times"></i></button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section class="about-hero">
+            <div class="container">
+                <h1 class="about-hero__title">О нашей мастерской</h1>
+                <p class="about-hero__subtitle">Создаем настроение с 2007 года</p>
+            </div>
+        </section>
+
+        <section class="about-story">
+            <div class="container">
+                <div class="about-story__grid">
+                    <div class="about-story__content">
+                        <h2 class="section-title">Наша история</h2>
+                        <p>Flowwow - это команда профессиональных флористов с более чем 15-летним опытом создания уникальных цветочных композиций.</p>
+                        <p>Наша история началась в 2007 году с небольшой цветочной лавки в центре Ростова-на-Дону. Сегодня мы - полноценная цветочная мастерская с собственной студией и командой талантливых флористов.</p>
+                        <p>Мы работаем только со свежими цветами от проверенных поставщиков и создаем букеты с душой и вниманием к деталям. Каждый наш букет - это маленькое произведение искусства.</p>
+                        <p>Наша миссия - дарить радость и эмоции через красоту цветов. Мы верим, что цветы могут выразить то, что сложно сказать словами.</p>
+                    </div>
+                    <div class="about-story__image">
+                        <img src="https://images.pexels.com/photos/2258545/pexels-photo-2258545.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Наша мастерская">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="about-team">
+            <div class="container">
+                <h2 class="section-title">Наша команда</h2>
+                <div class="about-team__grid" id="teamGrid"></div>
+            </div>
+        </section>
+
+        <section class="about-values">
+            <div class="container">
+                <h2 class="section-title">Наши ценности</h2>
+                <div class="about-values__grid">
+                    <div class="value-card"><div class="value-card__icon"><i class="fas fa-leaf"></i></div><h3 class="value-card__title">Свежесть</h3><p class="value-card__text">Используем только свежие цветы от проверенных поставщиков</p></div>
+                    <div class="value-card"><div class="value-card__icon"><i class="fas fa-heart"></i></div><h3 class="value-card__title">Любовь к делу</h3><p class="value-card__text">Вкладываем душу в каждый букет</p></div>
+                    <div class="value-card"><div class="value-card__icon"><i class="fas fa-clock"></i></div><h3 class="value-card__title">Пунктуальность</h3><p class="value-card__text">Доставляем заказы точно в срок</p></div>
+                    <div class="value-card"><div class="value-card__icon"><i class="fas fa-hand-sparkles"></i></div><h3 class="value-card__title">Индивидуальность</h3><p class="value-card__text">Учитываем все пожелания клиентов</p></div>
+                </div>
+            </div>
+        </section>
+
+        <section class="about-map">
+            <div class="container">
+                <h2 class="section-title">Как нас найти</h2>
+                <div class="about-map__grid">
+                    <div class="about-map__info">
+                        <div class="contact-info">
+                            <div class="contact-info__item"><i class="fas fa-map-marker-alt"></i><div><h4>Адрес</h4><p>г. Ростов-на-Дону, ул. Большая Садовая</p></div></div>
+                            <div class="contact-info__item"><i class="fas fa-phone"></i><div><h4>Телефон</h4><p>8-863-765-38-90</p></div></div>
+                            <div class="contact-info__item"><i class="fas fa-envelope"></i><div><h4>Email</h4><p>info@flowwow.ru</p></div></div>
+                            <div class="contact-info__item"><i class="fas fa-clock"></i><div><h4>Часы работы</h4><p>Пн-Пт: 9:00 - 20:00<br>Сб-Вс: 10:00 - 22:00</p></div></div>
+                        </div>
+                    </div>
+                    <div class="about-map__map">
+                        <iframe src="https://yandex.ru/map-widget/v1/?um=constructor%3A1a2b3c4d5e6f7g8h9i0j1k2l3m4n5o6p&amp;source=constructor" width="100%" height="400" frameborder="0" style="border-radius: 16px;"></iframe>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer__grid">
+                <div class="footer__col"><a href="index.html" class="footer__logo"><i class="fas fa-feather-alt"></i><span>Flowwow</span></a><p class="footer__text">Цветочная мастерская с душой.</p></div>
+                <div class="footer__col"><h3 class="footer__title">Навигация</h3><ul class="footer__links"><li><a href="index.html">Главная</a></li><li><a href="catalog.html">Каталог</a></li><li><a href="about.html">О нас</a></li><li><a href="articles.html">Статьи</a></li></ul></div>
+                <div class="footer__col"><h3 class="footer__title">Контакты</h3><ul class="footer__links"><li><i class="fas fa-phone"></i> 8-863-765-38-90</li><li><i class="fas fa-envelope"></i> info@flowwow.ru</li></ul></div>
+                <div class="footer__col"><h3 class="footer__title">Мы в соцсетях</h3><div class="footer__social"><a href="#"><i class="fab fa-instagram"></i></a><a href="#"><i class="fab fa-vk"></i></a><a href="#"><i class="fab fa-telegram"></i></a></div></div>
+            </div>
+            <div class="footer__bottom"><p>© 2026 Flowwow. Все права защищены.</p></div>
+        </div>
+    </footer>
+
+    <div class="modal" id="cartModal"><div class="modal__content"><button class="modal__close" id="cartModalClose"><i class="fas fa-times"></i></button><h2 class="modal__title">Корзина</h2><div class="cart-items" id="cartItems"></div><div class="cart-total"><span>Итого:</span><span id="cartTotal">0 ₽</span></div><button class="btn btn--primary btn--full" id="checkoutBtn">Оформить заказ</button></div></div>
+    <div class="modal" id="authModal"><div class="modal__content"><button class="modal__close" id="authModalClose"><i class="fas fa-times"></i></button><div class="auth-tabs"><button class="auth-tab active" data-tab="login">Вход</button><button class="auth-tab" data-tab="register">Регистрация</button></div><form id="loginForm" class="auth-form active"><input type="email" placeholder="Email" required><input type="password" placeholder="Пароль" required><button type="submit" class="btn btn--primary btn--full">Войти</button></form><form id="registerForm" class="auth-form"><input type="text" placeholder="Имя" required><input type="email" placeholder="Email" required><input type="password" placeholder="Пароль" required><input type="password" placeholder="Подтвердите пароль" required><button type="submit" class="btn btn--primary btn--full">Зарегистрироваться</button></form></div></div>
+
+    <script src="js/data.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/cart.js"></script>
+    <script src="js/main.js"></script>
+    <script>
+        const teamMembers = [
+            { name: 'Инна', role: 'Главный флорист', image: 'https://images.pexels.com/photos/3769027/pexels-photo-3769027.jpeg?auto=compress&cs=tinysrgb&w=400', quote: 'Создаю красоту уже 8 лет' },
+            { name: 'Мария', role: 'Флорист-дизайнер', image: 'https://images.pexels.com/photos/3769029/pexels-photo-3769029.jpeg?auto=compress&cs=tinysrgb&w=400', quote: 'Вдохновляюсь природой' },
+            { name: 'Елена', role: 'Старший флорист', image: 'https://images.pexels.com/photos/3769030/pexels-photo-3769030.jpeg?auto=compress&cs=tinysrgb&w=400', quote: 'Люблю нестандартные решения' },
+            { name: 'Дмитрий', role: 'Менеджер', image: 'https://images.pexels.com/photos/3769028/pexels-photo-3769028.jpeg?auto=compress&cs=tinysrgb&w=400', quote: 'Всегда на связи с клиентами' }
+        ];
+        const teamGrid = document.getElementById('teamGrid');
+        if (teamGrid) {
+            teamGrid.innerHTML = teamMembers.map(member => `<div class="team-card"><div class="team-card__image" style="background-image: url('${member.image}')"></div><h3 class="team-card__name">${member.name}</h3><p class="team-card__role">${member.role}</p><p class="team-card__quote">"${member.quote}"</p></div>`).join('');
+        }
+    </script>
+</body>
+</html>
