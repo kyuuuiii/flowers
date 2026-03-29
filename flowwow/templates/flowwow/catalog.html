@@ -13,14 +13,11 @@
         <section class="catalog-filters">
             <div class="container">
                 <div class="catalog-filters__row">
-                    <div class="catalog-filters__categories" id="filterCategories"></div>
-                    <div class="catalog-filters__sort">
-                        <select id="sortSelect">
-                            <option value="default">По умолчанию</option>
-                            <option value="price-asc">По возрастанию цены</option>
-                            <option value="price-desc">По убыванию цены</option>
-                            <option value="rating">По рейтингу</option>
-                        </select>
+                    <div class="catalog-filters__categories">
+                        <a href="?category=all" class="filter-btn {% if selected_category == 'all' %}active{% endif %}">Все букеты</a>
+                        {% for cat in categories %}
+                            <a href="?category={{ cat.slug }}" class="filter-btn {% if selected_category == cat.slug %}active{% endif %}">{{ cat.name }}</a>
+                        {% endfor %}
                     </div>
                 </div>
             </div>
@@ -28,7 +25,29 @@
 
         <section class="catalog-products">
             <div class="container">
-                <div class="products__grid" id="catalogProducts"></div>
+                <div class="products__grid">
+                    {% if products %}
+                        {% for product in products %}
+                            <div class="product-card" data-id="{{ product.id }}">
+                                <div class="product-card__image" style="background-image: url('{% if product.image %}{{ product.image.url }}{% else %}/static/flowwow/img/default-product.jpg{% endif %}')">
+                                    {% if product.oldPrice %}
+                                        <span class="product-card__badge">Хит продаж</span>
+                                    {% endif %}
+                                </div>
+                                <div class="product-card__info">
+                                    <h3 class="product-card__title">{{ product.name }}</h3>
+                                    <p class="product-card__composition">{{ product.short_description }}</p>
+                                    <div class="product-card__rating">{{ product.average_rating|floatformat:1 }} / 5 <span>({{ product.reviews_count }})</span></div>
+                                    <div class="product-card__price">{{ product.price }} ₽{% if product.oldPrice %} <span style="text-decoration: line-through; font-size: 14px; opacity: 0.6; margin-left: 8px;">{{ product.oldPrice }} ₽</span>{% endif %}</div>
+                                    <button class="btn product-card__btn" data-id="{{ product.id }}">В корзину</button>
+                                    <a class="btn btn--outline product-card__view" href="{% url 'product' product.slug %}">Подробнее</a>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <p style="text-align: center; grid-column: 1/-1; padding: 40px;">Ничего не найдено. Попробуйте изменить параметры поиска.</p>
+                    {% endif %}
+                </div>
             </div>
         </section>
     </main>

@@ -70,30 +70,25 @@ function initHeroSlider() {
 function initCategories() {
     const container = document.getElementById('categoriesGrid');
     if (!container) return;
-    container.innerHTML = categoriesData.map(cat => `<a href="catalog.html?category=${cat.id}" class="category-card"><div class="category-card__icon"><i class="fas ${cat.icon}"></i></div><h3 class="category-card__title">${cat.name}</h3><div class="category-card__count">${cat.count} букетов</div></a>`).join('');
+    // Server-side rendered, skip JS rendering
+    if (container.children.length > 0) return;
 }
 
 function initPopularProducts() {
     const container = document.getElementById('popularProducts');
     if (!container) return;
-    const popular = productsData.slice(0, 6);
-    container.innerHTML = popular.map(product => `
-        <div class="product-card" data-id="${product.id}">
-            <div class="product-card__image" style="background-image: url('${product.image}')">${product.oldPrice ? '<span class="product-card__badge">Хит продаж</span>' : ''}</div>
-            <div class="product-card__info">
-                <h3 class="product-card__title">${product.name}</h3>
-                <p class="product-card__composition">${product.composition}</p>
-                <div class="product-card__rating">${getStarsHtml(product.rating)} <span>(${product.reviews})</span></div>
-                <div class="product-card__price">${formatPrice(product.price)}${product.oldPrice ? `<span style="text-decoration: line-through; font-size: 14px; opacity: 0.6;">${formatPrice(product.oldPrice)}</span>` : ''}</div>
-                <button class="btn product-card__btn" data-id="${product.id}">В корзину</button>
-                <button class="btn btn--outline product-card__view" data-id="${product.id}" style="margin-top: 8px; width: 100%;">Подробнее</button>
-            </div>
-        </div>
-    `).join('');
-    
-    document.querySelectorAll('.product-card__btn').forEach(btn => btn.addEventListener('click', (e) => { e.stopPropagation(); addToCart(parseInt(btn.dataset.id)); }));
-    document.querySelectorAll('.product-card__view').forEach(btn => btn.addEventListener('click', (e) => { e.stopPropagation(); window.location.href = `product.html?id=${btn.dataset.id}`; }));
-    document.querySelectorAll('.product-card').forEach(card => card.addEventListener('click', () => window.location.href = `product.html?id=${card.dataset.id}`));
+    // Server-side rendered, skip JS rendering
+    if (container.children.length > 0) {
+        // Rebind event handlers for server-rendered products
+        document.querySelectorAll('.product-card__btn').forEach(btn => btn.addEventListener('click', (e) => { e.stopPropagation(); addToCart(parseInt(btn.dataset.id)); }));
+        document.querySelectorAll('.product-card').forEach(card => {
+            card.addEventListener('click', () => {
+                if (card.dataset.slug) window.location.href = `/product/${card.dataset.slug}/`;
+                else window.location.href = `product.html?id=${card.dataset.id}`;
+            });
+        });
+        return;
+    }
 }
 
 function initTestimonials() {

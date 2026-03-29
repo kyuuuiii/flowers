@@ -6,6 +6,7 @@ urlpatterns = [
     path('', views.index, name='index'),
     path('about/', views.about, name='about'),
     path('catalog/', views.catalog, name='catalog'),
+    path('product/<slug:product_slug>/', views.product, name='product'),
     path('articles/', views.articles, name='articles'),
     #path('catalog/', include('flowers.urls')),
 ]

@@ -25,6 +25,7 @@ class Products(models.Model): # букетики ^_^
 
     name = models.CharField(max_length=200, verbose_name="Название")
     price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Цена")
+    oldPrice = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True, verbose_name="Цена без скидки")
     short_description = models.CharField(max_length=255, blank=True, verbose_name="Краткое описание")
     description = models.TextField(verbose_name="Полное описание")
     slug = models.SlugField(unique=True, verbose_name="URL")
