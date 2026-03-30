@@ -1,7 +1,7 @@
 from django.shortcuts import render
 
 # Create your views here.
-from .models import Category, Products, Articles
+from .models import Category, Products, Articles, Order
 
 CATEGORY_ICONS = {
     'romantic': 'fa-heart',
@@ -77,4 +77,10 @@ def article(request, article_id):
     }
     return render(request, 'flowwow/article.html', context)
 
+def order(request):
+    order = Order.objects.all()
+    context = {
+        'order': order,
+    }
 
+    return render(request, 'flowwow/order.html', context)

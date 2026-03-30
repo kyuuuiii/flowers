@@ -9,5 +9,6 @@ urlpatterns = [
     path('product/<slug:product_slug>/', views.product, name='product'),
     path('articles/', views.articles, name='articles'),
     path('article/<int:article_id>/', views.article, name='article'),
+    path('order/', views.order, name='order'),
     #path('catalog/', include('flowers.urls')),
 ]

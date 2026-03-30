@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', function() {
     initHeroSlider();
     initCategories();
     initPopularProducts();
+    initCatalogProducts();
     initTestimonials();
     initModals();
     initProfile();
@@ -80,15 +81,29 @@ function initPopularProducts() {
     // Server-side rendered, skip JS rendering
     if (container.children.length > 0) {
         // Rebind event handlers for server-rendered products
-        document.querySelectorAll('.product-card__btn').forEach(btn => btn.addEventListener('click', (e) => { e.stopPropagation(); addToCart(parseInt(btn.dataset.id)); }));
-        document.querySelectorAll('.product-card').forEach(card => {
-            card.addEventListener('click', () => {
-                if (card.dataset.slug) window.location.href = `/product/${card.dataset.slug}/`;
-                else window.location.href = `product.html?id=${card.dataset.id}`;
-            });
-        });
+        bindProductEvents();
         return;
     }
+}
+
+function initCatalogProducts() {
+    // Bind event handlers for catalog products (server-rendered)
+    bindProductEvents();
+}
+
+function bindProductEvents() {
+    document.querySelectorAll('.product-card__btn').forEach(btn => {
+        btn.addEventListener('click', (e) => { 
+            e.stopPropagation(); 
+            addToCart(parseInt(btn.dataset.id)); 
+        });
+    });
+    document.querySelectorAll('.product-card').forEach(card => {
+        card.addEventListener('click', () => {
+            if (card.dataset.slug) window.location.href = `/product/${card.dataset.slug}/`;
+            else window.location.href = `product.html?id=${card.dataset.id}`;
+        });
+    });
 }
 
 function initTestimonials() {
@@ -179,7 +194,7 @@ function initModals() {
     }
     
     const checkoutBtn = document.getElementById('checkoutBtn');
-    if (checkoutBtn) checkoutBtn.addEventListener('click', () => { if (cart.length === 0) showNotification('Корзина пуста', 'error'); else window.location.href = 'order.html'; });
+    if (checkoutBtn) checkoutBtn.addEventListener('click', () => { if (cart.length === 0) showNotification('Корзина пуста', 'error'); else window.location.href = '/order/'; });
     
     const newsletterForm = document.getElementById('newsletterForm');
     if (newsletterForm) newsletterForm.addEventListener('submit', (e) => { e.preventDefault(); showNotification('Спасибо за подписку!'); newsletterForm.reset(); });
@@ -319,7 +334,7 @@ function initSearchOnMain() {
         searchInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
                 const query = searchInput.value.trim();
-                if (query) window.location.href = `catalog.html?search=${encodeURIComponent(query)}`;
+                if (query) window.location.href = `/catalog/?search=${encodeURIComponent(query)}`;
             }
         });
     }
@@ -353,7 +368,7 @@ if (document.querySelector('.order-form')) {
             localStorage.setItem('orders', JSON.stringify(orders));
             localStorage.removeItem('cart');
             showNotification('Заказ оформлен! С вами свяжется оператор.');
-            setTimeout(() => window.location.href = 'catalog.html', 2000);
+            setTimeout(() => window.location.href = '/catalog/', 2000);
         });
     })();
 }

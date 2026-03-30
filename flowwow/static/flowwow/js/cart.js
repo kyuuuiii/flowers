@@ -9,7 +9,22 @@ function updateCartCount() {
 }
 
 function addToCart(productId, quantity = 1) {
-    const product = productsData.find(p => p.id === productId);
+    // Try to get product from productsData first (for static pages)
+    let product = productsData ? productsData.find(p => p.id === productId) : null;
+    
+    // If not found, get from button data attributes (for Django pages)
+    if (!product) {
+        const btn = document.querySelector(`[data-id="${productId}"]`);
+        if (btn) {
+            product = {
+                id: parseInt(btn.dataset.id),
+                name: btn.dataset.name,
+                price: parseInt(btn.dataset.price),
+                image: btn.dataset.image
+            };
+        }
+    }
+    
     if (!product) return;
     
     const existingItem = cart.find(item => item.id === productId);
