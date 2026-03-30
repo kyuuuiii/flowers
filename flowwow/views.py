@@ -3,14 +3,30 @@ from django.shortcuts import render
 # Create your views here.
 from .models import Category, Products, Articles
 
+CATEGORY_ICONS = {
+    'romantic': 'fa-heart',
+    'wedding': 'fa-ring',
+    'birthday': 'fa-birthday-cake',
+    'business': 'fa-briefcase',
+    'spring': 'fa-seedling',
+    'luxury': 'fa-crown',
+    'apology': 'fa-hand-peace',
+    'thanks': 'fa-hands-helping',
+    'congratulation': 'fa-glass-cheers',
+    'just-because': 'fa-smile-wink',
+}
+
 def index(request):
     categories = Category.objects.all()
     popular_products = Products.objects.filter(is_available=True).order_by('-reviews_count')[:6]
+    for category in categories:
+        category.icon_class = CATEGORY_ICONS.get(category.slug, 'fa-bouquet')
     context = {
         'categories': categories,
         'popular_products': popular_products,
     }
     return render(request, 'flowwow/index.html', context)
+
 
 def about(request):
     return render(request, 'flowwow/about.html')

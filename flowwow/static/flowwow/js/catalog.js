@@ -51,4 +51,3 @@ function renderCatalogProducts() {
     document.querySelectorAll('.product-card').forEach(card => card.addEventListener('click', () => window.location.href = `product.html?id=${card.dataset.id}`));
 }
 
-// Server-side rendered catalog, no JS data fallback needed.

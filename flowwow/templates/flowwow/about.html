@@ -1,4 +1,5 @@
 {% extends 'flowwow/layout.html' %}
+{% load static %}
 {% block title %}О нас - Flowwow{% endblock %}
 {% block content %}
     <main>
@@ -20,7 +21,7 @@
                         <p>Наша миссия - дарить радость и эмоции через красоту цветов. Мы верим, что цветы могут выразить то, что сложно сказать словами.</p>
                     </div>
                     <div class="about-story__image">
-                        <img src="https://images.pexels.com/photos/2258545/pexels-photo-2258545.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Наша мастерская">
+                        <img src="{% static 'flowwow/img/мастерская 2.jpg' %}" alt="Наша мастерская">
                     </div>
                 </div>
             </div>
@@ -58,7 +59,7 @@
                         </div>
                     </div>
                     <div class="about-map__map">
-                        <iframe src="https://yandex.ru/map-widget/v1/?um=constructor%3A1a2b3c4d5e6f7g8h9i0j1k2l3m4n5o6p&amp;source=constructor" width="100%" height="400" frameborder="0" style="border-radius: 16px;"></iframe>
+                        <iframe src="https://yandex.ru/map-widget/v1/?um=constructor%3A1a2b3c4d5e6f7g8h9i0j1k2l3m4n5o6p&source=constructor" width="100%" height="400" frameborder="0" style="border-radius: 16px;"></iframe>
                     </div>
                 </div>
             </div>
