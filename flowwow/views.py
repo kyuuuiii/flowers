@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.db.models import Q
 
 # Create your views here.
 from .models import Category, Products, Articles, Order
@@ -33,6 +34,7 @@ def about(request):
 
 def catalog(request):
     selected_slug = request.GET.get('category', 'all')
+    search_query = request.GET.get('search', '').strip()
 
     categories = Category.objects.all()
 
@@ -40,10 +42,18 @@ def catalog(request):
     if selected_slug != 'all':
         products = products.filter(category__slug=selected_slug)
 
+    if search_query:
+        products = products.filter(
+            Q(name__icontains=search_query) |
+            Q(short_description__icontains=search_query) |
+            Q(description__icontains=search_query)
+        )
+
     context = {
         'categories': categories,
         'products': products,
         'selected_category': selected_slug,
+        'search_query': search_query,
     }
     return render(request, 'flowwow/catalog.html', context)
 

@@ -330,14 +330,23 @@ function initAdminFeatures() {
 
 function initSearchOnMain() {
     const searchInput = document.getElementById('searchInput');
-    if (searchInput && window.location.pathname.includes('index.html')) {
-        searchInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                const query = searchInput.value.trim();
-                if (query) window.location.href = `/catalog/?search=${encodeURIComponent(query)}`;
-            }
-        });
+    if (!searchInput) return;
+
+    if (window.location.search.includes('search=')) {
+        const currentSearch = new URLSearchParams(window.location.search).get('search') || '';
+        searchInput.value = currentSearch;
     }
+
+    searchInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            const query = searchInput.value.trim();
+            if (query) {
+                window.location.href = `/catalog/?search=${encodeURIComponent(query)}`;
+            } else {
+                window.location.href = '/catalog/';
+            }
+        }
+    });
 }
 
 function logout() {
