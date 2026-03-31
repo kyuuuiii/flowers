@@ -66,9 +66,6 @@
         </section>
     </main>
 
-    <div class="modal" id="cartModal"><div class="modal__content"><button class="modal__close" id="cartModalClose"><i class="fas fa-times"></i></button><h2 class="modal__title">Корзина</h2><div class="cart-items" id="cartItems"></div><div class="cart-total"><span>Итого:</span><span id="cartTotal">0 ₽</span></div><button class="btn btn--primary btn--full" id="checkoutBtn">Оформить заказ</button></div></div>
-    <div class="modal" id="authModal"><div class="modal__content"><button class="modal__close" id="authModalClose"><i class="fas fa-times"></i></button><div class="auth-tabs"><button class="auth-tab active" data-tab="login">Вход</button><button class="auth-tab" data-tab="register">Регистрация</button></div><form id="loginForm" class="auth-form active"><input type="email" placeholder="Email" required><input type="password" placeholder="Пароль" required><button type="submit" class="btn btn--primary btn--full">Войти</button></form><form id="registerForm" class="auth-form"><input type="text" placeholder="Имя" required><input type="email" placeholder="Email" required><input type="password" placeholder="Пароль" required><input type="password" placeholder="Подтвердите пароль" required><button type="submit" class="btn btn--primary btn--full">Зарегистрироваться</button></form></div></div>
-
     {% block scripts %}
     <script>
         const teamMembers = [
