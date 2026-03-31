@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="{% static 'flowwow/css/style.css' %}">
 </head>
-<body>
+<body data-authenticated="{{ user.is_authenticated|lower }}" data-username="{{ user.get_full_name|default:user.username }}">
     <header class="header">
         <div class="container header__container">
             <a href="{% url 'index' %}" class="logo">
@@ -101,6 +101,125 @@
     <script src="{% static 'flowwow/js/utils.js' %}"></script>
     <script src="{% static 'flowwow/js/cart.js' %}"></script>
     <script src="{% static 'flowwow/js/main.js' %}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // 1. CSRF Token
+    function getCookie(name) {
+        let v = null;
+        if (document.cookie) {
+            const c = document.cookie.split(';');
+            for(let i=0; i<c.length; i++) {
+                const k = c[i].trim();
+                if(k.indexOf(name+'=')===0) v = decodeURIComponent(k.substring(name.length+1));
+            }
+        }
+        return v;
+    }
+    const csrf = getCookie('csrftoken');
+    const isAuth = document.body.dataset.authenticated === 'true';
+    const username = document.body.dataset.username || 'Гость';
+
+    // 2. Element References
+    const userBtn = document.getElementById('userBtn');
+    const authModal = document.getElementById('authModal');
+    const profileModal = document.getElementById('profileModal');
+    const profileName = document.getElementById('profileUsername');
+    const logoutBtn = document.getElementById('logoutBtn');
+    const loginForm = document.getElementById('loginForm');
+    const regForm = document.getElementById('registerForm');
+    const authTabs = document.querySelectorAll('.auth-tab');
+
+    // 3. User Button → Show correct modal
+    if (userBtn) userBtn.addEventListener('click', () => {
+        if (isAuth) {
+            profileName.textContent = username;
+            profileModal?.classList.add('active');
+            authModal?.classList.remove('active');
+        } else {
+            authModal?.classList.add('active');
+            profileModal?.classList.remove('active');
+        }
+    });
+
+    // 4. Auth Tabs → Switch forms
+    authTabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            authTabs.forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+            const target = tab.dataset.tab;
+            loginForm?.classList.toggle('active', target === 'login');
+            regForm?.classList.toggle('active', target === 'register');
+        });
+    });
+
+    // 5. Close Modals on X or backdrop click
+    document.querySelectorAll('.modal__close, .modal').forEach(el => {
+        el.addEventListener('click', (e) => {
+            if (e.target.classList.contains('modal__close') || e.target.classList.contains('modal')) {
+                e.target.closest('.modal')?.classList.remove('active');
+            }
+        });
+    });
+
+    // 6. LOGIN REQUEST
+    if (loginForm) {
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = loginForm.querySelector('button');
+            btn.disabled = true; btn.textContent = 'Входим...';
+            try {
+                const res = await fetch('/auth/login/', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json', 'X-CSRFToken': csrf},
+                    body: JSON.stringify({
+                        username: loginForm.querySelector('[name="username"]').value,
+                        password: loginForm.querySelector('[name="password"]').value
+                    })
+                });
+                const d = await res.json();
+                if (res.ok) { authModal.classList.remove('active'); window.location.reload(); }
+                else alert('❌ ' + (d.error || 'Ошибка входа'));
+            } catch { alert('❌ Ошибка сети'); }
+            finally { btn.disabled = false; btn.textContent = 'Войти'; }
+        });
+    }
+
+    // 7. REGISTER REQUEST
+    if (regForm) {
+        regForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if (regForm.querySelector('[name="password"]').value !== regForm.querySelector('[name="confirm_password"]').value) {
+                alert('❌ Пароли не совпадают'); return;
+            }
+            const btn = regForm.querySelector('button');
+            btn.disabled = true; btn.textContent = 'Создаём...';
+            try {
+                const res = await fetch('/auth/register/', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json', 'X-CSRFToken': csrf},
+                    body: JSON.stringify({
+                        username: regForm.querySelector('[name="username"]').value,
+                        email: regForm.querySelector('[name="email"]').value,
+                        password: regForm.querySelector('[name="password"]').value
+                    })
+                });
+                const d = await res.json();
+                if (res.ok) { authModal.classList.remove('active'); window.location.reload(); }
+                else alert('❌ ' + (d.error || 'Ошибка регистрации'));
+            } catch { alert('❌ Ошибка сети'); }
+            finally { btn.disabled = false; btn.textContent = 'Зарегистрироваться'; }
+        });
+    }
+
+    // 8. LOGOUT REQUEST
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', async () => {
+            await fetch('/auth/logout/', { method: 'POST', headers: {'X-CSRFToken': csrf} });
+            window.location.reload();
+        });
+    }
+});
+</script>
     {% block scripts %}{% endblock %}
 </body>
 </html>

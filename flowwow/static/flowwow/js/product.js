@@ -1,136 +1,102 @@
+// product.js
 document.addEventListener('DOMContentLoaded', function() {
     const reviewsSection = document.getElementById('reviewsSection');
     if (!reviewsSection) return;
 
-    const productId = reviewsSection.dataset.productId;
+    const form = document.getElementById('reviewForm');
+    const authPrompt = document.getElementById('authPrompt');
+    const submitBtn = document.getElementById('submitReviewBtn');
+    const openAuthBtn = document.getElementById('openAuthModalBtn');
     const reviewsList = document.getElementById('reviewsList');
-    const reviewsCountEl = document.getElementById('reviewsCount');
-    const noReviewsMessage = document.getElementById('noReviewsMessage');
-    const reviewForm = document.getElementById('reviewForm');
-    const reviewRating = document.getElementById('reviewRating');
-    const reviewText = document.getElementById('reviewText');
-    const reviewLoginPrompt = document.getElementById('reviewLoginPrompt');
-    const openAuthFromReview = document.getElementById('openAuthFromReview');
+    const countEl = document.getElementById('reviewsCount');
+    const emptyMsg = document.getElementById('noReviewsMessage');
 
-    function getProductReviewsFromStorage() {
-        const key = 'productReviews';
-        const stored = localStorage.getItem(key);
-        if (!stored) return [];
-        try { return JSON.parse(stored); } catch (e) { return []; }
+    // 🔒 CSRF Helper
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
     }
+    const csrftoken = getCookie('csrftoken');
 
-    function saveProductReviewsToStorage(reviews) {
-        localStorage.setItem('productReviews', JSON.stringify(reviews));
-    }
+    // 🔐 Read auth state from HTML data attribute (NO DJANGO SYNTAX IN JS)
+    const isAuthenticated = reviewsSection.dataset.authenticated === 'true';
 
-    function getCurrentUser() {
-        if (localStorage.getItem('isLoggedIn') !== 'true') return null;
-        try { return JSON.parse(localStorage.getItem('currentUser') || '{}'); } catch (e) { return null; }
-    }
-
-    function escapeHtml(value) {
-        const div = document.createElement('div');
-        div.textContent = value;
-        return div.innerHTML;
-    }
-
-    function renderReviewItem(review) {
-        const item = document.createElement('div');
-        item.className = 'review-item';
-        item.innerHTML = `
-            <div class="review-header"><span class="review-author">${escapeHtml(review.author)}</span><span class="review-date">${escapeHtml(review.date)}</span></div>
-            <div class="review-rating">${escapeHtml(String(review.rating))}/5</div>
-            <p class="review-text">${escapeHtml(review.text)}</p>
-        `;
-        reviewsList.appendChild(item);
-    }
-
-    function updateReviewsStatus() {
-        const byProduct = getProductReviewsFromStorage().filter(r => String(r.productId) === String(productId));
-        const renderedCount = reviewsList.querySelectorAll('.review-item').length;
-        const total = renderedCount;
-        if (total === 0) {
-            noReviewsMessage.style.display = 'block';
-            reviewsCountEl.textContent = '0';
+    function updateAuthState() {
+        if (isAuthenticated) {
+            form.style.display = 'block';
+            authPrompt.style.display = 'none';
         } else {
-            noReviewsMessage.style.display = 'none';
-            reviewsCountEl.textContent = total;
-        }
-        return byProduct;
-    }
-
-    function initializeReviews() {
-        const savedReviews = getProductReviewsFromStorage().filter(review => String(review.productId) === String(productId));
-        if (savedReviews.length > 0) {
-            savedReviews.forEach(renderReviewItem);
-        }
-        setTimeout(updateReviewsStatus, 0);
-    }
-
-    function toggleReviewForm() {
-        const user = getCurrentUser();
-        if (user) {
-            reviewForm.style.display = 'block';
-            reviewLoginPrompt.style.display = 'none';
-        } else {
-            if (reviewForm) reviewForm.style.display = 'none';
-            if (reviewLoginPrompt) reviewLoginPrompt.style.display = 'block';
+            form.style.display = 'none';
+            authPrompt.style.display = 'block';
         }
     }
+    updateAuthState();
 
-    if (openAuthFromReview) {
-        openAuthFromReview.addEventListener('click', () => {
+    // 🚪 Open Login Modal
+    if (openAuthBtn) {
+        openAuthBtn.addEventListener('click', () => {
             document.getElementById('authModal')?.classList.add('active');
-            document.getElementById('profileModal')?.classList.remove('active');
         });
     }
 
-    if (reviewForm) {
-        reviewForm.addEventListener('submit', function(e) {
+    // 📤 Submit Review
+    if (form) {
+        form.addEventListener('submit', async function(e) {
             e.preventDefault();
-            const currentUser = getCurrentUser();
-            if (!currentUser) {
-                showNotification('Войдите в аккаунт чтобы оставить отзыв', 'error');
-                reviewLoginPrompt.style.display = 'block';
-                return;
-            }
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Отправка...';
 
-            const rating = parseInt(reviewRating.value);
-            const text = reviewText.value.trim();
-            if (!rating || rating < 1 || rating > 5 || !text) {
-                showNotification('Пожалуйста, выберите оценку и введите текст отзыва', 'error');
-                return;
-            }
-
-            const allReviews = getProductReviewsFromStorage();
-            const already = allReviews.find(r => String(r.productId) === String(productId) && String(r.userId || '') === String(currentUser.id || currentUser.email));
-            if (already) {
-                showNotification('Вы уже оставили отзыв для этого товара', 'error');
-                return;
-            }
-
-            const newReview = {
-                id: Date.now(),
-                productId: Number(productId),
-                userId: currentUser.id || currentUser.email,
-                author: currentUser.name || currentUser.email || 'Пользователь',
-                rating: rating,
-                text: text,
-                date: new Date().toLocaleDateString('ru-RU'),
+            const data = {
+                product_id: form.querySelector('[name="product_id"]').value,
+                rating: parseInt(document.getElementById('reviewRating').value),
+                comment: document.getElementById('reviewText').value.trim()
             };
 
-            allReviews.push(newReview);
-            saveProductReviewsToStorage(allReviews);
-            renderReviewItem(newReview);
-            updateReviewsStatus();
+            try {
+                const res = await fetch('/review/submit/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrftoken
+                    },
+                    body: JSON.stringify(data)
+                });
+                const result = await res.json();
 
-            reviewRating.value = '';
-            reviewText.value = '';
-
-            showNotification('Спасибо за отзыв!');
+                if (res.ok) {
+                    const r = result.review;
+                    const html = `<div class="review-item"><div class="review-header"><span class="review-author">${r.author}</span><span class="review-date">${r.date}</span></div><div class="review-rating">${r.rating}/5</div><p class="review-text">${r.comment}</p></div>`;
+                    reviewsList.insertAdjacentHTML('afterbegin', html);
+                    
+                    countEl.textContent = parseInt(countEl.textContent) + 1;
+                    emptyMsg.style.display = 'none';
+                    form.reset();
+                    alert('✅ Отзыв опубликован!');
+                } else {
+                    alert('❌ ' + (result.error || 'Ошибка'));
+                }
+            } catch (err) {
+                alert('❌ Ошибка сети');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Отправить отзыв';
+            }
         });
     }
 
-    initializeReviews();
-    toggleReviewForm();
+    // 🛒 Keep your cart logic here
+    const addToCartBtn = document.getElementById('addToCartBtn');
+    if (addToCartBtn) {
+        addToCartBtn.addEventListener('click', () => addToCart(parseInt(addToCartBtn.dataset.id)));
+    }
 });

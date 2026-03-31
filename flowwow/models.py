@@ -72,6 +72,7 @@ class Review(models.Model):
         verbose_name="Оценка"
     )
     comment = models.TextField(verbose_name="Комментарий")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата отзыва")
 
     class Meta:
         verbose_name = "Отзыв"

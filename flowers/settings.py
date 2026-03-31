@@ -118,3 +118,17 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # В самый низ settings.py
 X_FRAME_OPTIONS = 'SAMEORIGIN'
 SECURE_REFERRER_POLICY = 'no-referrer-when-downgrade'
+
+# --- CSRF & SESSION FIX FOR LOCALHOST ---
+CSRF_TRUSTED_ORIGINS = [
+    'http://127.0.0.1:8000',
+    'http://localhost:8000',
+]
+
+CSRF_COOKIE_SECURE = False
+SESSION_COOKIE_SECURE = False
+CSRF_COOKIE_SAMESITE = 'Lax'
+SESSION_COOKIE_SAMESITE = 'Lax'
+CSRF_COOKIE_HTTPONLY = False # Allows JS to read it if needed
+SESSION_COOKIE_HTTPONLY = True
+# ----------------------------------------

@@ -10,5 +10,9 @@ urlpatterns = [
     path('articles/', views.articles, name='articles'),
     path('article/<int:article_id>/', views.article, name='article'),
     path('order/', views.order, name='order'),
-    #path('catalog/', include('flowers.urls')),
+
+    path('auth/login/', views.user_login, name='login'),
+    path('auth/register/', views.user_register, name='register'),
+    path('auth/logout/', views.user_logout, name='logout'),
+    path('review/submit/', views.submit_review, name='submit_review'),
 ]

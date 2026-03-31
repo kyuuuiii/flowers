@@ -27,30 +27,51 @@
                 <div class="product-page__grid"><p style="text-align:center; padding: 40px;">Товар не найден.</p></div>
                 {% endif %}
 
-                <div id="reviewsSection" data-product-id="{{ product.id }}">
-                    <div class="reviews-section">
-                        <h3 class="reviews-title">Отзывы покупателей (<span id="reviewsCount">{{ reviews.count }}</span>)</h3>
-                        <div class="reviews-list" id="reviewsList">
-                            {% for review in reviews %}
-                                <div class="review-item">
-                                    <div class="review-header"><span class="review-author">{{ review.user.get_full_name|default:review.user.username }}</span><span class="review-date">{{ review.created_at|default:review.id }}</span></div>
-                                    <div class="review-rating">{{ review.rating }}/5</div>
-                                    <p class="review-text">{{ review.comment }}</p>
-                                </div>
-                            {% endfor %}
-                        </div>
-                        <p class="reviews-empty" id="noReviewsMessage" style="display: none;">Пока нет отзывов. Будьте первым!</p>
+<div id="reviewsSection" data-product-id="{{ product.id }}" data-authenticated="{{ user.is_authenticated|yesno:'true,false' }}">
+    <div class="reviews-section">
+        <h3 class="reviews-title">Отзывы покупателей (<span id="reviewsCount">{{ reviews.count }}</span>)</h3>
+        <div class="reviews-list" id="reviewsList">
+            {% for review in reviews %}
+                <div class="review-item">
+                    <div class="review-header">
+                        <span class="review-author">{{ review.user.get_full_name|default:review.user.username }}</span>
+                        <span class="review-date">{{ review.created_at|date:"d.m.Y" }}</span>
                     </div>
-                    <div class="review-form-section">
-                        <h4>Оставить отзыв</h4>
-                        <p id="reviewLoginPrompt" style="display: none;">Войдите, чтобы оставить отзыв: <button type="button" id="openAuthFromReview" class="btn btn--outline">Войти</button></p>
-                        <form id="reviewForm" style="display: none;" class="order-form">
-                            <div class="form-group"><label>Ваша оценка</label><select id="reviewRating" required><option value="">Выберите</option><option value="5">5</option><option value="4">4</option><option value="3">3</option><option value="2">2</option><option value="1">1</option></select></div>
-                            <div class="form-group"><label>Комментарий</label><textarea id="reviewText" rows="3" required></textarea></div>
-                            <button type="submit" class="btn btn--primary btn--full">Отправить отзыв</button>
-                        </form>
-                    </div>
+                    <div class="review-rating">{{ review.rating }}/5</div>
+                    <p class="review-text">{{ review.comment }}</p>
                 </div>
+            {% endfor %}
+        </div>
+        <p class="reviews-empty" id="noReviewsMessage" style="display: {% if reviews|length == 0 %}block{% else %}none{% endif %};">
+            Пока нет отзывов. Будьте первым!
+        </p>
+    </div>
+
+                <div class="review-form-section">
+                    <h4>Оставить отзыв</h4>
+                    <div id="authPrompt" style="display: none;">
+                        <p>Войдите, чтобы оставить отзыв:</p>
+                        <button type="button" id="openAuthModalBtn" class="btn btn--outline">Войти</button>
+                    </div>
+
+                    <form id="reviewForm" style="display: {% if user.is_authenticated %}block{% else %}none{% endif %};" class="order-form">
+                        {% csrf_token %}
+                        <input type="hidden" name="product_id" value="{{ product.id }}">
+                        <div class="form-group">
+                            <label>Ваша оценка</label>
+                            <select id="reviewRating" required>
+                                <option value="">Выберите</option>
+                                {% for i in "54321" %}<option value="{{ i }}">{{ i }}</option>{% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Комментарий</label>
+                            <textarea id="reviewText" rows="3" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn--primary btn--full" id="submitReviewBtn">Отправить отзыв</button>
+                    </form>
+                </div>
+            </div>
             </div>
         </section>
     </main>
