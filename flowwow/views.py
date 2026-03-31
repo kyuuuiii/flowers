@@ -2,11 +2,14 @@ from django.shortcuts import render
 from django.db.models import Q
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_protect
-from django.views.decorators.http import require_POST
+
+from .models import Category, Products, Articles, Order, Review, OrderItem
+
+from django.db import IntegrityError
 import json
-from .models import Category, Products, Articles, Order, Review
+from django.http import JsonResponse
+from django.views.decorators.http import require_POST
+from django.views.decorators.csrf import csrf_protect
 
 CATEGORY_ICONS = {
     'romantic': 'fa-heart',
@@ -110,16 +113,16 @@ def user_logout(request):
     return JsonResponse({'success': True})
 
 
-# 📝 REVIEW VIEW
 @csrf_protect
 @require_POST
 def submit_review(request):
     if not request.user.is_authenticated:
-        return JsonResponse({'error': 'Необходима авторизация'}, status=401)
+        return JsonResponse({'error': 'Требуется авторизация'}, status=401)
 
-    data = json.loads(request.body)
     try:
+        data = json.loads(request.body)
         product = Products.objects.get(id=data['product_id'])
+
         if Review.objects.filter(product=product, user=request.user).exists():
             return JsonResponse({'error': 'Вы уже оставляли отзыв'}, status=400)
 
@@ -137,5 +140,57 @@ def submit_review(request):
                 'date': review.created_at.strftime('%d.%m.%Y')
             }
         })
+    except IntegrityError:
+        # Catches the UNIQUE constraint cleanly instead of showing raw DB error
+        return JsonResponse({'error': 'Вы уже оставляли отзыв на этот товар'}, status=400)
     except Exception as e:
-        return JsonResponse({'error': str(e)}, status=400)
+        return JsonResponse({'error': 'Ошибка сервера'}, status=500)
+
+
+import traceback
+
+
+@csrf_protect
+@require_POST
+def submit_order(request):
+    try:
+        data = json.loads(request.body)
+        cart_items = data.get('cart_items', [])
+        if not cart_items:
+            return JsonResponse({'error': 'Корзина пуста'}, status=400)
+
+        total = 0.0
+        order_items = []
+
+        for item in cart_items:
+            pid = int(item.get('id', 0))
+            qty = int(item.get('quantity', 1))
+            price = float(item.get('price', 0))
+
+            if not Products.objects.filter(id=pid).exists():
+                return JsonResponse({'error': f'Товар ID {pid} не найден'}, status=400)
+
+            order_items.append({
+                'product_id': pid,
+                'quantity': qty,
+                'price': price
+            })
+            total += price * qty
+
+        order = Order.objects.create(
+            user=request.user if request.user.is_authenticated else None,
+            total_price=total,
+            delivery_address=data.get('address', ''),
+            phone=data.get('phone', ''),
+            email=data.get('email', ''),
+            comment=f"Доставка: {data.get('date')} в {data.get('time')}\n{data.get('comment', '')}"
+        )
+
+        for oi in order_items:
+            OrderItem.objects.create(order=order, **oi)
+
+        return JsonResponse({'success': True, 'order_id': order.id})
+    except Exception as e:
+        # Prints EXACT error to your terminal so you know what broke
+        print("❌ ORDER CRASH:", traceback.format_exc())
+        return JsonResponse({'error': f'Ошибка оформления: {str(e)}'}, status=500)

@@ -103,7 +103,6 @@
     <script src="{% static 'flowwow/js/main.js' %}"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // 1. CSRF Token
     function getCookie(name) {
         let v = null;
         if (document.cookie) {
@@ -119,7 +118,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const isAuth = document.body.dataset.authenticated === 'true';
     const username = document.body.dataset.username || 'Гость';
 
-    // 2. Element References
     const userBtn = document.getElementById('userBtn');
     const authModal = document.getElementById('authModal');
     const profileModal = document.getElementById('profileModal');
@@ -129,7 +127,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const regForm = document.getElementById('registerForm');
     const authTabs = document.querySelectorAll('.auth-tab');
 
-    // 3. User Button → Show correct modal
     if (userBtn) userBtn.addEventListener('click', () => {
         if (isAuth) {
             profileName.textContent = username;
@@ -141,7 +138,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // 4. Auth Tabs → Switch forms
     authTabs.forEach(tab => {
         tab.addEventListener('click', () => {
             authTabs.forEach(t => t.classList.remove('active'));
@@ -152,16 +148,19 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // 5. Close Modals on X or backdrop click
-    document.querySelectorAll('.modal__close, .modal').forEach(el => {
-        el.addEventListener('click', (e) => {
-            if (e.target.classList.contains('modal__close') || e.target.classList.contains('modal')) {
-                e.target.closest('.modal')?.classList.remove('active');
-            }
+    document.querySelectorAll('.modal__close').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.modal')?.classList.remove('active');
         });
     });
 
-    // 6. LOGIN REQUEST
+    document.querySelectorAll('.modal').forEach(modal => {
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) modal.classList.remove('active');
+        });
+    });
+
     if (loginForm) {
         loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -178,18 +177,17 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
                 const d = await res.json();
                 if (res.ok) { authModal.classList.remove('active'); window.location.reload(); }
-                else alert('❌ ' + (d.error || 'Ошибка входа'));
-            } catch { alert('❌ Ошибка сети'); }
+                else alert(' ' + (d.error || 'Ошибка входа'));
+            } catch { alert('Ошибка сети'); }
             finally { btn.disabled = false; btn.textContent = 'Войти'; }
         });
     }
 
-    // 7. REGISTER REQUEST
     if (regForm) {
         regForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             if (regForm.querySelector('[name="password"]').value !== regForm.querySelector('[name="confirm_password"]').value) {
-                alert('❌ Пароли не совпадают'); return;
+                alert('Пароли не совпадают'); return;
             }
             const btn = regForm.querySelector('button');
             btn.disabled = true; btn.textContent = 'Создаём...';
@@ -205,13 +203,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
                 const d = await res.json();
                 if (res.ok) { authModal.classList.remove('active'); window.location.reload(); }
-                else alert('❌ ' + (d.error || 'Ошибка регистрации'));
-            } catch { alert('❌ Ошибка сети'); }
+                else alert(' ' + (d.error || 'Ошибка регистрации'));
+            } catch { alert(' Ошибка сети'); }
             finally { btn.disabled = false; btn.textContent = 'Зарегистрироваться'; }
         });
     }
 
-    // 8. LOGOUT REQUEST
     if (logoutBtn) {
         logoutBtn.addEventListener('click', async () => {
             await fetch('/auth/logout/', { method: 'POST', headers: {'X-CSRFToken': csrf} });

@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', function() {
     initCatalogProducts();
     initTestimonials();
     initModals();
-    initProfile();
+    //initProfile();
     initAdminFeatures();
     updateCartCount();
     initSearchOnMain();
@@ -92,12 +92,6 @@ function initCatalogProducts() {
 }
 
 function bindProductEvents() {
-    document.querySelectorAll('.product-card__btn').forEach(btn => {
-        btn.addEventListener('click', (e) => { 
-            e.stopPropagation(); 
-            addToCart(parseInt(btn.dataset.id)); 
-        });
-    });
     document.querySelectorAll('.product-card').forEach(card => {
         card.addEventListener('click', () => {
             if (card.dataset.slug) window.location.href = `/product/${card.dataset.slug}/`;
@@ -357,27 +351,4 @@ function initSearchOnMain() {
 //     location.reload();
 // }
 
-if (document.querySelector('.order-form')) {
-    (function initOrderPage() {
-        const form = document.getElementById('orderForm');
-        if (!form) return;
-        const cartItems = getFromStorage('cart') || [];
-        const total = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
-        const summaryDiv = document.querySelector('.order-summary');
-        if (summaryDiv) summaryDiv.innerHTML = `<h4>Ваш заказ</h4>${cartItems.map(item => `<p>${item.name} x ${item.quantity} - ${formatPrice(item.price * item.quantity)}</p>`).join('')}<p><strong>Итого: ${formatPrice(total)}</strong></p>`;
-        form.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
-            const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
-            if (!isLoggedIn) { showNotification('Войдите в аккаунт для оформления заказа', 'error'); document.getElementById('authModal').classList.add('active'); return; }
-            if (cartItems.length === 0) { showNotification('Корзина пуста', 'error'); return; }
-            const orders = JSON.parse(localStorage.getItem('orders') || '[]');
-            const newOrder = { id: orders.length + 1, userId: currentUser.id, date: new Date().toLocaleDateString('ru-RU'), items: cartItems, total: total, status: 'Новый' };
-            orders.push(newOrder);
-            localStorage.setItem('orders', JSON.stringify(orders));
-            localStorage.removeItem('cart');
-            showNotification('Заказ оформлен! С вами свяжется оператор.');
-            setTimeout(() => window.location.href = '/catalog/', 2000);
-        });
-    })();
-}
+if (document.querySelector('.order-form')) { /* DISABLED */ }

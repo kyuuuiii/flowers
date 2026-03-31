@@ -16,11 +16,13 @@
             <button class="auth-tab" data-tab="register">Регистрация</button>
         </div>
         <form id="loginForm" class="auth-form active">
+            {% csrf_token %}
             <input type="text" name="username" placeholder="Логин или Email" required>
             <input type="password" name="password" placeholder="Пароль" required>
             <button type="submit" class="btn btn--primary btn--full">Войти</button>
         </form>
         <form id="registerForm" class="auth-form">
+            {% csrf_token %}
             <input type="text" name="username" placeholder="Логин" required>
             <input type="email" name="email" placeholder="Email" required>
             <input type="password" name="password" placeholder="Пароль" required>

@@ -21,5 +21,78 @@
         </section>
     </main>
 
-    {% block scripts %}{% endblock %}
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('orderForm');
+    if (!form) return;
+
+    // 1. Grab CSRF token
+    function getCookie(name) {
+        let v = null;
+        if (document.cookie) {
+            const c = document.cookie.split(';');
+            for(let i=0; i<c.length; i++) {
+                const k = c[i].trim();
+                if(k.indexOf(name+'=')===0) v = decodeURIComponent(k.substring(name.length+1));
+            }
+        }
+        return v;
+    }
+    const csrf = getCookie('csrftoken');
+    const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+
+    // 2. Show cart summary
+    const summary = document.getElementById('orderSummary');
+    if (summary) {
+        const total = cart.reduce((s, i) => s + (i.price * i.quantity), 0);
+        summary.innerHTML = `<h4>Ваш заказ</h4>${cart.map(i => `<p>${i.name} x ${i.quantity} - ${i.price * i.quantity} ₽</p>`).join('')}<p><strong>Итого: ${total} ₽</strong></p>`;
+    }
+
+    // 3. Handle Submit (100% isolated from main.js)
+    form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        e.stopImmediatePropagation(); // KILLS other scripts from hijacking
+        if (!form.checkValidity()) { form.reportValidity(); return; }
+
+        const btn = form.querySelector('button[type="submit"]');
+        btn.disabled = true; btn.textContent = 'Отправляем...';
+
+        const payload = {
+            cart_items: cart,
+            phone: document.getElementById('orderPhone').value.trim(),
+            email: document.getElementById('orderEmail').value.trim(),
+            address: document.getElementById('orderAddress').value.trim(),
+            date: document.getElementById('orderDate').value,
+            time: document.getElementById('orderTime').value,
+            comment: document.getElementById('orderComment').value.trim()
+        };
+
+        if (cart.length === 0) { alert('❌ Корзина пуста'); btn.disabled = false; btn.textContent = 'Подтвердить заказ'; return; }
+
+        try {
+            const res = await fetch('/order/submit/', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json', 'X-CSRFToken': csrf},
+                body: JSON.stringify(payload)
+            });
+            const d = await res.json();
+
+            if (res.ok) {
+                localStorage.removeItem('cart');
+                alert('✅ Заказ успешно оформлен! Спасибо за покупку.');
+                window.location.href = '/catalog/';
+            } else {
+                alert('❌ ' + (d.error || 'Ошибка оформления'));
+                btn.disabled = false; btn.textContent = 'Подтвердить заказ';
+            }
+        } catch (err) {
+            console.error('Order fetch failed:', err);
+            alert('❌ Ошибка сети. Проверьте консоль (F12)');
+            btn.disabled = false; btn.textContent = 'Подтвердить заказ';
+        }
+    });
+});
+</script>
+{% endblock %}
 {% endblock %}

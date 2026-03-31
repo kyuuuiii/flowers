@@ -1,81 +1,107 @@
-let cart = getFromStorage('cart') || [];
+let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+
+// 🔒 Auto-bind buttons when DOM is ready
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.product-card__btn').forEach(btn => {
+        // Prevent double-binding
+        if (btn.dataset.cartBound) return;
+        btn.dataset.cartBound = 'true';
+
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            const id = this.dataset.id;
+            if (id) addToCart(parseInt(id));
+        });
+    });
+    updateCartCount();
+});
 
 function updateCartCount() {
     const cartCount = document.getElementById('cartCount');
     if (cartCount) {
-        const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+        const totalItems = cart.reduce((sum, item) => sum + (item.quantity || 1), 0);
         cartCount.textContent = totalItems;
     }
 }
 
 function addToCart(productId, quantity = 1) {
-    // Try to get product from productsData first (for static pages)
-    let product = productsData ? productsData.find(p => p.id === productId) : null;
-    
-    // If not found, get from button data attributes (for Django pages)
-    if (!product) {
-        const btn = document.querySelector(`[data-id="${productId}"]`);
-        if (btn) {
-            product = {
-                id: parseInt(btn.dataset.id),
-                name: btn.dataset.name,
-                price: parseInt(btn.dataset.price),
-                image: btn.dataset.image
-            };
-        }
+    let product = null;
+
+    // 1. Try getting data attributes directly (Django pages)
+    const btn = document.querySelector(`.product-card__btn[data-id="${productId}"]`);
+    if (btn && btn.dataset.name && btn.dataset.price) {
+        product = {
+            id: parseInt(btn.dataset.id),
+            name: btn.dataset.name,
+            price: parseFloat(btn.dataset.price),
+            image: btn.dataset.image || ''
+        };
     }
-    
-    if (!product) return;
-    
-    const existingItem = cart.find(item => item.id === productId);
+
+    // 2. Fallback to static data.js if needed
+    if (!product && typeof productsData !== 'undefined') {
+        product = productsData.find(p => p.id === productId) || null;
+    }
+
+    if (!product || !product.id || !product.name) {
+        console.warn('⚠️ Cart: Missing data for product', productId);
+        return;
+    }
+
+    const existingItem = cart.find(item => item.id === product.id);
     if (existingItem) {
-        existingItem.quantity += quantity;
+        existingItem.quantity = (existingItem.quantity || 1) + quantity;
     } else {
-        cart.push({ id: product.id, name: product.name, price: product.price, image: product.image, quantity: quantity });
+        cart.push({ ...product, quantity: quantity });
     }
-    
-    saveToStorage('cart', cart);
+
+    localStorage.setItem('cart', JSON.stringify(cart));
     updateCartCount();
     showNotification(`${product.name} добавлен в корзину`);
 }
 
 function removeFromCart(productId) {
     cart = cart.filter(item => item.id !== productId);
-    saveToStorage('cart', cart);
+    localStorage.setItem('cart', JSON.stringify(cart));
     updateCartCount();
-    renderCartModal();
+    if (typeof renderCartModal === 'function') renderCartModal();
 }
 
 function updateCartQuantity(productId, quantity) {
     const item = cart.find(item => item.id === productId);
     if (item) {
         if (quantity <= 0) removeFromCart(productId);
-        else { item.quantity = quantity; saveToStorage('cart', cart); renderCartModal(); }
+        else {
+            item.quantity = quantity;
+            localStorage.setItem('cart', JSON.stringify(cart));
+            if (typeof renderCartModal === 'function') renderCartModal();
+        }
     }
     updateCartCount();
 }
 
 function getCartTotal() {
-    return cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    return cart.reduce((sum, item) => sum + ((item.price || 0) * (item.quantity || 1)), 0);
 }
 
 function renderCartModal() {
     const cartItemsContainer = document.getElementById('cartItems');
     const cartTotalSpan = document.getElementById('cartTotal');
     if (!cartItemsContainer) return;
-    
+
     if (cart.length === 0) {
         cartItemsContainer.innerHTML = '<p style="text-align: center;">Корзина пуста</p>';
         cartTotalSpan.textContent = '0 ₽';
         return;
     }
-    
+
     cartItemsContainer.innerHTML = cart.map(item => `
         <div class="cart-item" data-id="${item.id}">
             <div class="cart-item__image" style="background-image: url('${item.image}')"></div>
             <div class="cart-item__info">
                 <div class="cart-item__title">${item.name}</div>
-                <div class="cart-item__price">${formatPrice(item.price)}</div>
+                <div class="cart-item__price">${item.price} ₽</div>
                 <div class="cart-item__quantity">
                     <button class="cart-qty-btn" data-id="${item.id}" data-change="-1">-</button>
                     <span>${item.quantity}</span>
@@ -85,21 +111,30 @@ function renderCartModal() {
             <button class="cart-item__remove" data-id="${item.id}"><i class="fas fa-trash-alt"></i></button>
         </div>
     `).join('');
-    
-    cartTotalSpan.textContent = formatPrice(getCartTotal());
-    
+
+    cartTotalSpan.textContent = getCartTotal() + ' ₽';
+
+    // Rebind modal buttons
     document.querySelectorAll('.cart-qty-btn').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            const id = parseInt(btn.dataset.id);
-            const change = parseInt(btn.dataset.change);
-            const item = cart.find(i => i.id === id);
-            if (item) updateCartQuantity(id, item.quantity + change);
+        btn.replaceWith(btn.cloneNode(true));
+        document.querySelectorAll('.cart-qty-btn').forEach(b => {
+            if (b.dataset.change == btn.dataset.change && b.dataset.id == btn.dataset.id) {
+                b.addEventListener('click', (e) => {
+                    const id = parseInt(b.dataset.id);
+                    const change = parseInt(b.dataset.change);
+                    const item = cart.find(i => i.id === id);
+                    if (item) updateCartQuantity(id, (item.quantity || 1) + change);
+                });
+            }
         });
     });
-    
+
     document.querySelectorAll('.cart-item__remove').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            removeFromCart(parseInt(btn.dataset.id));
+        btn.replaceWith(btn.cloneNode(true));
+        document.querySelectorAll('.cart-item__remove').forEach(b => {
+            if (b.dataset.id == btn.dataset.id) {
+                b.addEventListener('click', () => removeFromCart(parseInt(b.dataset.id)));
+            }
         });
     });
 }
