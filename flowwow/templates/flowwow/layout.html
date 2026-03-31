@@ -19,10 +19,10 @@
             </a>
             <nav class="nav">
                 <ul class="nav__list">
-                    <li><a href="{% url 'index' %}" class="nav__link active">Главная</a></li>
-                    <li><a href="{% url 'catalog' %}" class="nav__link">Каталог</a></li>
-                    <li><a href="{% url 'about' %}" class="nav__link">О нас</a></li>
-                    <li><a href="{% url 'articles' %}" class="nav__link">Статьи</a></li>
+                    <li><a href="{% url 'index' %}" class="nav__link {% if request.resolver_match.url_name == 'index' %}active{% endif %}">Главная</a></li>
+                    <li><a href="{% url 'catalog' %}" class="nav__link {% if request.resolver_match.url_name == 'catalog' %}active{% endif %}">Каталог</a></li>
+                    <li><a href="{% url 'about' %}" class="nav__link {% if request.resolver_match.url_name == 'about' %}active{% endif %}">О нас</a></li>
+                    <li><a href="{% url 'articles' %}" class="nav__link {% if request.resolver_match.url_name == 'articles' %}active{% endif %}">Статьи</a></li>
                 </ul>
             </nav>
             <div class="header__actions">
@@ -64,10 +64,10 @@
                 <div class="footer__col">
                     <h3 class="footer__title">Навигация</h3>
                     <ul class="footer__links">
-                        <li><a href="{% url 'index' %}" class="nav__link active">Главная</a></li>
-                        <li><a href="{% url 'catalog' %}" class="nav__link">Каталог</a></li>
-                        <li><a href="{% url 'about' %}" class="nav__link">О нас</a></li>
-                        <li><a href="{% url 'articles' %}" class="nav__link">Статьи</a></li>
+                        <li><a href="{% url 'index' %}" class="nav__link{% if request.resolver_match.url_name == 'index' %} active{% endif %}">Главная</a></li>
+                        <li><a href="{% url 'catalog' %}" class="nav__link{% if request.resolver_match.url_name == 'catalog' %} active{% endif %}">Каталог</a></li>
+                        <li><a href="{% url 'about' %}" class="nav__link{% if request.resolver_match.url_name == 'about' %} active{% endif %}">О нас</a></li>
+                        <li><a href="{% url 'articles' %}" class="nav__link{% if request.resolver_match.url_name == 'articles' %} active{% endif %}">Статьи</a></li>
                     </ul>
                 </div>
                 <div class="footer__col">
@@ -79,6 +79,7 @@
                         <li><i class="fas fa-clock"></i> Пн-Пт: 9:00-20:00, Сб-Вс: 10:00-22:00</li>
                     </ul>
                 </div>
+
                 <div class="footer__col">
                     <h3 class="footer__title">Мы в соцсетях</h3>
                     <div class="footer__social">
