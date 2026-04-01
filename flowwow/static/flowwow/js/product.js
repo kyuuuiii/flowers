@@ -1,4 +1,3 @@
-// product.js
 document.addEventListener('DOMContentLoaded', function() {
     const reviewsSection = document.getElementById('reviewsSection');
     if (!reviewsSection) return;
