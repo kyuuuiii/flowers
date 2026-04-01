@@ -47,32 +47,35 @@
         </p>
     </div>
 
-                <div class="review-form-section">
-                    <h4>Оставить отзыв</h4>
-                    <div id="authPrompt" style="display: none;">
-                        <p>Войдите, чтобы оставить отзыв:</p>
-                        <button type="button" id="openAuthModalBtn" class="btn btn--outline">Войти</button>
-                    </div>
+    <div class="review-form-section">
+        <h4>Оставить отзыв</h4>
+        <div id="authPrompt" style="display: none;">
+            <p>Войдите, чтобы оставить отзыв:</p>
+            <button type="button" id="openAuthModalBtn" class="btn btn--outline">Войти</button>
+        </div>
 
-                    <form id="reviewForm" style="display: {% if user.is_authenticated %}block{% else %}none{% endif %};" class="order-form">
-                        {% csrf_token %}
-                        <input type="hidden" name="product_id" value="{{ product.id }}">
-                        <div class="form-group">
-                            <label>Ваша оценка</label>
-                            <select id="reviewRating" required>
-                                <option value="">Выберите</option>
-                                {% for i in "54321" %}<option value="{{ i }}">{{ i }}</option>{% endfor %}
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>Комментарий</label>
-                            <textarea id="reviewText" rows="3" required></textarea>
-                        </div>
-                        <button type="submit" class="btn btn--primary btn--full" id="submitReviewBtn">Отправить отзыв</button>
-                    </form>
-                </div>
+        <form id="reviewForm" style="display: {% if user.is_authenticated %}block{% else %}none{% endif %};" class="order-form">
+            {% csrf_token %}
+            <input type="hidden" name="product_id" value="{{ product.id }}">
+            <div class="form-group">
+                <label>Ваша оценка</label>
+                <select id="reviewRating" required>
+                    <option value="">Выберите</option>
+                    <option value="5">5</option>
+                    <option value="4">4</option>
+                    <option value="3">3</option>
+                    <option value="2">2</option>
+                    <option value="1">1</option>
+                </select>
             </div>
+            <div class="form-group">
+                <label>Комментарий</label>
+                <textarea id="reviewText" rows="3" required></textarea>
             </div>
+            <button type="submit" class="btn btn--primary btn--full" id="submitReviewBtn">Отправить отзыв</button>
+        </form>
+    </div>
+</div>            </div>
         </section>
     </main>
 
