@@ -38,15 +38,38 @@ def about(request): return render(request, 'flowwow/about.html')
 def catalog(request):
     selected_slug = request.GET.get('category', 'all')
     search_query = request.GET.get('search', '').strip()
+    sort = request.GET.get('sort', 'default')
+
     categories = Category.objects.all()
     products = Products.objects.filter(is_available=True)
-    if selected_slug != 'all': products = products.filter(category__slug=selected_slug)
-    if search_query: products = products.filter(
-        Q(name__icontains=search_query) | Q(short_description__icontains=search_query) | Q(
-            description__icontains=search_query))
-    return render(request, 'flowwow/catalog.html',
-                  {'categories': categories, 'products': products, 'selected_category': selected_slug,
-                   'search_query': search_query})
+
+    if selected_slug != 'all':
+        products = products.filter(category__slug=selected_slug)
+
+    if search_query:
+        products = products.filter(
+            Q(name__icontains=search_query) |
+            Q(short_description__icontains=search_query) |
+            Q(description__icontains=search_query)
+        )
+
+    if sort == 'price_asc':
+        products = products.order_by('price')
+    elif sort == 'price_desc':
+        products = products.order_by('-price')
+    elif sort == 'rating':
+        products = products.order_by('-average_rating')
+    else:
+        products = products.order_by('id')
+
+    context = {
+        'categories': categories,
+        'products': products,
+        'selected_category': selected_slug,
+        'search_query': search_query,
+        'sort': sort,
+    }
+    return render(request, 'flowwow/catalog.html', context)
 
 
 def product(request, product_slug):

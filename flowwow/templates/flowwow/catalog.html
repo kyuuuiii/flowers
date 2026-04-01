@@ -14,10 +14,18 @@
             <div class="container">
                 <div class="catalog-filters__row">
                     <div class="catalog-filters__categories">
-                        <a href="?category=all" class="filter-btn {% if selected_category == 'all' %}active{% endif %}">Все букеты</a>
+                        <a href="?category=all{% if sort %}&sort={{ sort }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}" class="filter-btn {% if selected_category == 'all' %}active{% endif %}">Все букеты</a>
                         {% for cat in categories %}
-                            <a href="?category={{ cat.slug }}" class="filter-btn {% if selected_category == cat.slug %}active{% endif %}">{{ cat.name }}</a>
+                            <a href="?category={{ cat.slug }}{% if sort %}&sort={{ sort }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}" class="filter-btn {% if selected_category == cat.slug %}active{% endif %}">{{ cat.name }}</a>
                         {% endfor %}
+                    </div>
+                    <div class="catalog-filters__sort">
+                        <select id="sortSelect" onchange="updateSort(this.value)">
+                            <option value="default" {% if sort == 'default' or not sort %}selected{% endif %}>По умолчанию</option>
+                            <option value="price_asc" {% if sort == 'price_asc' %}selected{% endif %}>Цена: по возрастанию</option>
+                            <option value="price_desc" {% if sort == 'price_desc' %}selected{% endif %}>Цена: по убыванию</option>
+                            <option value="rating" {% if sort == 'rating' %}selected{% endif %}>По рейтингу</option>
+                        </select>
                     </div>
                 </div>
             </div>
@@ -63,6 +71,12 @@
     </main>
 
     {% block scripts %}
-    <script src="{% static 'flowwow/js/catalog.js' %}"></script>
+        <script>
+        function updateSort(sortValue) {
+            const url = new URL(window.location.href);
+            url.searchParams.set('sort', sortValue);
+            window.location.href = url.toString();
+        }
+        </script>
     {% endblock %}
 {% endblock %}
