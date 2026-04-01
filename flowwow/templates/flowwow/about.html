@@ -30,7 +30,32 @@
         <section class="about-team">
             <div class="container">
                 <h2 class="section-title">Наша команда</h2>
-                <div class="about-team__grid" id="teamGrid"></div>
+                <div class="about-team__grid">
+                    <div class="team-card">
+                        <div class="team-card__image" style="background-image: url('{% static 'flowwow/img/Алиса.jpg' %}')"></div>
+                        <h3 class="team-card__name">Алиса</h3>
+                        <p class="team-card__role">Главный флорист</p>
+                        <p class="team-card__quote">"Создаю красоту уже 8 лет"</p>
+                    </div>
+                    <div class="team-card">
+                        <div class="team-card__image" style="background-image: url('{% static 'flowwow/img/Евгения.jpg' %}')"></div>
+                        <h3 class="team-card__name">Евгения</h3>
+                        <p class="team-card__role">Флорист-дизайнер</p>
+                        <p class="team-card__quote">"Вдохновляюсь природой"</p>
+                    </div>
+                    <div class="team-card">
+                        <div class="team-card__image" style="background-image: url('{% static 'flowwow/img/Ольга.jpg' %}')"></div>
+                        <h3 class="team-card__name">Ольга</h3>
+                        <p class="team-card__role">Старший флорист</p>
+                        <p class="team-card__quote">"Люблю нестандартные решения"</p>
+                    </div>
+                    <div class="team-card">
+                        <div class="team-card__image" style="background-image: url('{% static 'flowwow/img/Олег2.jpg' %}')"></div>
+                        <h3 class="team-card__name">Олег</h3>
+                        <p class="team-card__role">Менеджер</p>
+                        <p class="team-card__quote">"Всегда на связи с клиентами"</p>
+                    </div>
+                </div>
             </div>
         </section>
 
@@ -59,7 +84,7 @@
                         </div>
                     </div>
                     <div class="about-map__map">
-                        <iframe src="https://yandex.ru/map-widget/v1/?um=constructor%3A1a2b3c4d5e6f7g8h9i0j1k2l3m4n5o6p&source=constructor" width="100%" height="400" frameborder="0" style="border-radius: 16px;"></iframe>
+                        <iframe src="https://yandex.ru/map-widget/v1/?text=Ростов-на-Дону,+ул.+Большая+Садовая,+113&z=17&l=map" width="100%" height="400" frameborder="0" allowfullscreen="true" style="border-radius: 16px;"></iframe>
                     </div>
                 </div>
             </div>
@@ -67,17 +92,5 @@
     </main>
 
     {% block scripts %}
-    <script>
-        const teamMembers = [
-            { name: 'Алиса', role: 'Главный флорист', image: 'flowwow/static/flowwow/img/Алиса.jpg', quote: 'Создаю красоту уже 8 лет' },
-            { name: 'Евгения', role: 'Флорист-дизайнер', image: 'flowwow/static/flowwow/img/Евгения.jpg', quote: 'Вдохновляюсь природой' },
-            { name: 'Ольга', role: 'Старший флорист', image: 'flowwow/static/flowwow/img/Ольга.webp', quote: 'Люблю нестандартные решения' },
-            { name: 'Олег', role: 'Менеджер', image: 'flowwow/static/flowwow/img/Олег2.jpg', quote: 'Всегда на связи с клиентами' }
-        ];
-        const teamGrid = document.getElementById('teamGrid');
-        if (teamGrid) {
-            teamGrid.innerHTML = teamMembers.map(member => `<div class="team-card"><div class="team-card__image" style="background-image: url('${member.image}')"></div><h3 class="team-card__name">${member.name}</h3><p class="team-card__role">${member.role}</p><p class="team-card__quote">"${member.quote}"</p></div>`).join('');
-        }
-    </script>
     {% endblock %}
 {% endblock %}
