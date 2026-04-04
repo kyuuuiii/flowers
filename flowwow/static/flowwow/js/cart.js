@@ -1,6 +1,5 @@
 let cart = JSON.parse(localStorage.getItem('cart') || '[]');
 
-// 🔒 Auto-bind buttons when DOM is ready
 document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('.product-card__btn').forEach(btn => {
         // Prevent double-binding
@@ -28,7 +27,6 @@ function updateCartCount() {
 function addToCart(productId, quantity = 1) {
     let product = null;
 
-    // 1. Try getting data attributes directly (Django pages)
     const btn = document.querySelector(`.product-card__btn[data-id="${productId}"]`);
     if (btn && btn.dataset.name && btn.dataset.price) {
         product = {
@@ -39,7 +37,6 @@ function addToCart(productId, quantity = 1) {
         };
     }
 
-    // 2. Fallback to static data.js if needed
     if (!product && typeof productsData !== 'undefined') {
         product = productsData.find(p => p.id === productId) || null;
     }
